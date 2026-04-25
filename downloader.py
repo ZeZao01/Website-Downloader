@@ -434,22 +434,190 @@ class WebsiteDownloader:
             # Check if body has very few elements but contains an iframe
             direct_children = page.query_selector_all('body > *')
             iframes = page.query_selector_all('iframe')
-            
-            if len(direct_children) <= 5 and len(iframes) > 0:
-                # Page might be a wrapper - try to get iframe content
-                for frame in page.frames:
-                    if frame != page.main_frame:
-                        try:
-                            content = frame.content()
-                            if len(content) > len(main_content) * 0.3:
-                                self.log("🔍 Detectado wrapper com iframe - usando conteúdo do frame...")
-                                if frame.url and frame.url not in ['about:blank', 'about:srcdoc']:
-                                    self.base_url = frame.url
-                                return content, True
-                        except:
-                            pass
-        
+
+            # Treat as wrapper only when the main HTML is also small. This avoids
+            # false positives on real landing pages that embed a single iframe
+            # (e.g. a YouTube/Vimeo player) but still ship full content.
+            is_wrapper = (
+                len(direct_children) <= 5
+                and len(iframes) > 0
+                and len(main_content) < 8000
+            )
+
+            if is_wrapper:
+                # Some providers chain cross-origin iframes (e.g. *.preview.<provider>.com
+                # -> app.<provider>.com/loading -> *.static.<provider>.com),
+                # so we wait for the real content frame and pick the best one.
+                self.log("🔍 Detectada página wrapper. Aguardando iframes internos carregarem...")
+                best = self._wait_for_real_content_frame(page)
+                if best is not None:
+                    frame, content = best
+                    self.log(f"🔍 Conteúdo real encontrado em: {frame.url[:80]}")
+                    if frame.url and frame.url not in ['about:blank', 'about:srcdoc']:
+                        self.base_url = frame.url
+                    return content, True
+
         return None, False
+
+    def _score_frame_content(self, content):
+        """
+        Heuristic score for how likely a frame holds the *real* site content
+        instead of being a loader / wrapper / tracking iframe.
+        Higher is better. Returns negative for non-content frames.
+        """
+        if not content or len(content) < 500:
+            return -1
+
+        lowered = content.lower()
+
+        # Strong negative signals: loader / preview pages from common providers
+        loader_markers = [
+            'loading-preview',
+            'preview environment is not responding',
+            'starting up',
+            'cdn-cgi/challenge',
+            'criteo', 'doubleclick', 'googletagmanager', 'googlesyndication',
+            'analytics', 'pixel',
+        ]
+        if any(m in lowered for m in loader_markers):
+            return -1
+
+        # Must look like a real HTML document
+        if '<head' not in lowered or '<body' not in lowered:
+            return -1
+
+        score = 0
+        # Real apps usually ship CSS, scripts and many elements
+        score += lowered.count('<link') * 5
+        score += lowered.count('<script') * 2
+        score += lowered.count('<div')
+        score += lowered.count('<img') * 3
+        score += lowered.count('<section') * 2
+
+        # Bonus when it looks like a SPA root
+        for marker in ['id="__next"', 'id="root"', 'id="app"', 'id="__nuxt"',
+                       '__next_data__', 'data-reactroot']:
+            if marker in lowered:
+                score += 25
+                break
+
+        # Slight bonus for total size, but not dominant
+        score += min(len(content) // 1000, 100)
+
+        return score
+
+    def _wait_for_real_content_frame(self, page, max_wait_ms=15000, poll_ms=1000):
+        """Poll page.frames until we find a frame that scores well as real content."""
+        elapsed = 0
+        best_seen = None  # (score, frame, content)
+
+        while elapsed <= max_wait_ms:
+            for frame in page.frames:
+                if frame == page.main_frame:
+                    continue
+                url = frame.url or ''
+                if url in ('about:blank', 'about:srcdoc'):
+                    # about:srcdoc still might have content - try it
+                    if url != 'about:srcdoc':
+                        continue
+                try:
+                    content = frame.content()
+                except Exception:
+                    continue
+                score = self._score_frame_content(content)
+                if score <= 0:
+                    continue
+                if best_seen is None or score > best_seen[0]:
+                    best_seen = (score, frame, content)
+
+            # Good enough? Stop polling early.
+            if best_seen and best_seen[0] >= 50:
+                return best_seen[1], best_seen[2]
+
+            page.wait_for_timeout(poll_ms)
+            elapsed += poll_ms
+
+        if best_seen:
+            return best_seen[1], best_seen[2]
+        return None
+
+    def _apply_basic_stealth(self, context):
+        """
+        Reduce obvious automation fingerprints that trigger anti-bot pages
+        on some hosts when running in cloud/datacenter environments.
+        """
+        context.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined
+            });
+            Object.defineProperty(navigator, 'languages', {
+                get: () => ['en-US', 'en']
+            });
+            Object.defineProperty(navigator, 'plugins', {
+                get: () => [1, 2, 3]
+            });
+            window.chrome = window.chrome || { runtime: {} };
+        """)
+
+    def _is_challenge_page(self, page):
+        """Detect common anti-bot/challenge pages."""
+        try:
+            title = (page.title() or "").lower()
+            content = (page.content() or "").lower()
+            title_markers = [
+                "just a moment",
+                "verify you are human",
+                "checking your browser",
+                "attention required",
+            ]
+            hard_content_markers = [
+                "/cdn-cgi/challenge",
+                "cf-challenge",
+                "cf-browser-verification",
+                "challenge-platform",
+                "datadome",
+                "perimeterx",
+            ]
+            if any(marker in title for marker in title_markers):
+                return True
+
+            if any(marker in content for marker in hard_content_markers):
+                return True
+
+            # Extra guard: avoid false positives from regular "captcha" embeds.
+            if "verify you are human" in content and "cloudflare" in content:
+                return True
+
+            return False
+        except Exception:
+            return False
+
+    def _navigate_with_retries(self, page):
+        """Navigate with multiple strategies for heavy/protected websites."""
+        attempts = [
+            ("domcontentloaded", 60000),
+            ("load", 80000),
+            ("networkidle", 90000),
+        ]
+        last_error = None
+
+        for wait_until, timeout in attempts:
+            try:
+                page.goto(self.url, wait_until=wait_until, timeout=timeout)
+                self.log(f"✓ Página carregada ({wait_until})")
+                page.wait_for_timeout(2500)
+                return
+            except Exception as e:
+                last_error = e
+                self.log(f"⚠️ Tentativa ({wait_until}) falhou: {str(e)[:100]}")
+
+        # Keep compatibility with old behavior when partial content exists.
+        if page.url and page.url != "about:blank":
+            self.log("⚠️ Continuando com conteúdo parcial carregado...")
+            return
+
+        if last_error:
+            raise last_error
 
     def process(self):
         with sync_playwright() as p:
@@ -478,7 +646,10 @@ class WebsiteDownloader:
                 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 viewport={'width': 1920, 'height': 1080},
                 device_scale_factor=1,
+                locale='en-US',
+                timezone_id='America/New_York',
             )
+            self._apply_basic_stealth(context)
             
             page = context.new_page()
             
@@ -509,12 +680,20 @@ class WebsiteDownloader:
             
             self.log(f"🌐 Carregando {self.url}...")
             try:
-                # Try with a shorter timeout and less strict wait condition
-                page.goto(self.url, wait_until='load', timeout=60000)
-                self.log("✓ Página carregada (load)")
+                self._navigate_with_retries(page)
                 # Wait a bit more for additional resources
                 page.wait_for_timeout(3000)
                 self.log("✓ Recursos adicionais carregados")
+
+                # Retry once if we landed on an anti-bot challenge page
+                if self._is_challenge_page(page):
+                    self.log("🤖 Proteção anti-bot detectada. Aguardando e tentando novamente...")
+                    page.wait_for_timeout(5000)
+                    try:
+                        page.reload(wait_until='domcontentloaded', timeout=60000)
+                        page.wait_for_timeout(3000)
+                    except Exception:
+                        pass
             except Exception as e:
                 self.log(f"⚠️ Aviso de carregamento: {str(e)[:100]}")
                 self.log("⚠️ Tentando continuar mesmo assim...")
@@ -590,7 +769,6 @@ class WebsiteDownloader:
                     css_content = self.network_resources[abs_url]['body'].decode('utf-8', errors='ignore')
                 except:
                     pass
-            
             if not css_content:
                 # Fallback download
                 try:
