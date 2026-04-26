@@ -641,7 +641,7 @@ class WebsiteDownloader:
                     '--safebrowsing-disable-auto-update',
                 ]
             )
-            
+
             context = browser.new_context(
                 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 viewport={'width': 1920, 'height': 1080},
@@ -652,30 +652,63 @@ class WebsiteDownloader:
             self._apply_basic_stealth(context)
             
             page = context.new_page()
-            
-            # Capture network responses (including redirects)
+
+            # Skip media that we can't really replay offline anyway. This both
+            # speeds up captures and avoids holding huge video buffers in RAM.
+            BLOCKED_RESOURCE_TYPES = {'media', 'websocket', 'eventsource'}
+
+            def route_filter(route):
+                try:
+                    if route.request.resource_type in BLOCKED_RESOURCE_TYPES:
+                        return route.abort()
+                except Exception:
+                    pass
+                try:
+                    return route.continue_()
+                except Exception:
+                    pass
+
+            try:
+                page.route('**/*', route_filter)
+            except Exception:
+                pass
+
+            # Skip caching of huge bodies that don't fit our offline model
+            MAX_RESOURCE_BYTES = 8 * 1024 * 1024  # 8 MB per asset
+
             def capture_response(response):
                 try:
                     url = response.url
-                    if response.status == 200 and not url.startswith(('data:', 'blob:')):
-                        try:
-                            body = response.body()
-                            resource_data = {
-                                'body': body,
-                                'content_type': response.headers.get('content-type', '')
-                            }
-                            # Store by final URL
-                            self.network_resources[url] = resource_data
-                            
-                            # Also store by original request URL (handles redirects)
-                            request_url = response.request.url
-                            if request_url != url:
-                                self.network_resources[request_url] = resource_data
-                        except:
-                            pass
-                except:
+                    if response.status != 200:
+                        return
+                    if url.startswith(('data:', 'blob:')):
+                        return
+                    try:
+                        length = int(response.headers.get('content-length', 0))
+                    except Exception:
+                        length = 0
+                    if length and length > MAX_RESOURCE_BYTES:
+                        return
+                    try:
+                        body = response.body()
+                    except Exception:
+                        return
+                    if len(body) > MAX_RESOURCE_BYTES:
+                        return
+                    resource_data = {
+                        'body': body,
+                        'content_type': response.headers.get('content-type', '')
+                    }
+                    self.network_resources[url] = resource_data
+                    try:
+                        request_url = response.request.url
+                        if request_url != url:
+                            self.network_resources[request_url] = resource_data
+                    except Exception:
+                        pass
+                except Exception:
                     pass
-            
+
             page.on("response", capture_response)
             
             self.log(f"🌐 Carregando {self.url}...")
@@ -733,9 +766,20 @@ class WebsiteDownloader:
                 html_content = page.content()
             
             self.log(f"📦 Capturados {len(self.network_resources)} recursos de rede")
-            
-            browser.close()
-        
+
+            try:
+                page.close()
+            except Exception:
+                pass
+            try:
+                context.close()
+            except Exception:
+                pass
+            try:
+                browser.close()
+            except Exception:
+                pass
+
         # Process HTML
         self.log("🔧 Processando HTML e assets...")
         soup = BeautifulSoup(html_content, 'html.parser')
@@ -975,8 +1019,23 @@ class WebsiteDownloader:
         html_output = str(soup)
         with open(os.path.join(self.output_dir, 'index.html'), 'w', encoding='utf-8') as f:
             f.write(html_output)
-        
-        self.log(f"✅ Concluído! {len(self.resource_cache)} assets salvos")
+
+        assets_count = len(self.resource_cache)
+        self.log(f"✅ Concluído! {assets_count} assets salvos")
+
+        # Free large in-memory buffers ASAP. The downloader instance may
+        # still be referenced briefly by the worker thread; without this,
+        # captured response bodies (potentially tens of MB) linger until GC.
+        self.network_resources.clear()
+        self.resource_cache.clear()
+        if self.session is not None:
+            try:
+                self.session.close()
+            except Exception:
+                pass
+            self.session = None
+        soup.decompose()
+
         return True
 
     def _scroll_page(self, page):
