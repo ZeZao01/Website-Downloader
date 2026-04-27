@@ -28,3 +28,8 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+
+# Uploads and outputs (user data)
+uploads/
+outputs/
+models_catalog.json

@@ -5,3 +5,5 @@ beautifulsoup4==4.12.3
 urllib3==2.1.0
 gunicorn==21.2.0
 psutil==5.9.8
+python-dotenv==1.0.0
+Pillow==10.2.0
