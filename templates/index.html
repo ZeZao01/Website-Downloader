@@ -156,11 +156,14 @@ class Bolt {
     }
     reset() {
         this.x = Math.random() * canvas.width;
-        this.y = 0;
-        this.path = [{x: this.x, y: 0}];
+        this.y = Math.random() * canvas.height;
+        this.tx = this.x + (Math.random() - 0.5) * 800;
+        this.ty = this.y + (Math.random() - 0.5) * 400;
+        this.path = [{x: this.x, y: this.y}];
         this.state = 'waiting';
-        this.timer = Math.random() * 100;
+        this.timer = Math.random() * 50;
         this.opacity = 0;
+        this.sparks = [];
     }
     update() {
         if(this.state === 'waiting') {
@@ -168,36 +171,70 @@ class Bolt {
             if(this.timer <= 0) this.state = 'striking';
         } else if(this.state === 'striking') {
             const last = this.path[this.path.length-1];
-            if(last.y < canvas.height) {
-                for(let i=0; i<3; i++) {
+            const dist = Math.hypot(this.tx - last.x, this.ty - last.y);
+            
+            if(dist > 10) {
+                for(let i=0; i<5; i++) {
+                    const angle = Math.atan2(this.ty - last.y, this.tx - last.x);
                     const next = {
-                        x: last.x + (Math.random() - 0.5) * 40,
-                        y: last.y + Math.random() * 20
+                        x: last.x + Math.cos(angle) * 30 + (Math.random() - 0.5) * 20,
+                        y: last.y + Math.sin(angle) * 30 + (Math.random() - 0.5) * 20
                     };
                     this.path.push(next);
-                    if(next.y >= canvas.height) break;
+                    
+                    // Create sparks
+                    if(Math.random() > 0.7) {
+                        this.sparks.push({
+                            x: next.x, y: next.y,
+                            vx: (Math.random() - 0.5) * 5,
+                            vy: (Math.random() - 0.5) * 5,
+                            life: 1
+                        });
+                    }
                 }
             } else {
                 this.state = 'fading';
-                this.opacity = 1;
+                this.opacity = 1.5;
             }
         } else {
-            this.opacity -= 0.05;
+            this.opacity -= 0.1;
+            this.sparks.forEach(s => {
+                s.x += s.vx; s.y += s.vy;
+                s.life -= 0.05;
+            });
             if(this.opacity <= 0) this.reset();
         }
     }
     draw() {
         if(this.state === 'waiting') return;
+        
+        // Draw sparks
+        this.sparks.forEach(s => {
+            if(s.life > 0) {
+                ctx.fillStyle = `rgba(255, 255, 100, ${s.life})`;
+                ctx.fillRect(s.x, s.y, 2, 2);
+            }
+        });
+
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(255, 255, 200, ${this.opacity})`;
-        ctx.shadowColor = '#fffce0';
-        ctx.shadowBlur = 15;
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        ctx.shadowColor = '#ffe000';
+        ctx.shadowBlur = 20 * this.opacity;
+        ctx.lineWidth = 2;
         ctx.moveTo(this.path[0].x, this.path[0].y);
         for(let i=1; i<this.path.length; i++) {
             ctx.lineTo(this.path[i].x, this.path[i].y);
         }
         ctx.stroke();
+        
+        // Yellow core
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255, 230, 0, ${this.opacity * 0.8})`;
+        ctx.lineWidth = 1;
+        ctx.moveTo(this.path[0].x, this.path[0].y);
+        for(let i=1; i<this.path.length; i++) ctx.lineTo(this.path[i].x, this.path[i].y);
+        ctx.stroke();
+        
         ctx.shadowBlur = 0;
     }
 }
