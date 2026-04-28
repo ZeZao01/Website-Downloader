@@ -17,6 +17,7 @@ import gc
 import json
 import hashlib
 import zipfile
+import requests
 from collections import defaultdict
 from dotenv import load_dotenv
 from downloader import WebsiteDownloader, zip_directory, get_site_name
@@ -214,8 +215,42 @@ def _process_capture(sid, url):
     def log_cb(msg):
         q.put(msg)
 
-    downloader = None
     try:
+        # --- LÓGICA DE INTELIGÊNCIA / CACHE ---
+        q.put("🔍 Verificando histórico de capturas...")
+        existing_model = db.get_model_by_url(url)
+        
+        # Gerar hash do conteúdo atual para comparação
+        current_hash = ""
+        try:
+            resp = requests.get(url, timeout=10, headers={'User-Agent': 'Mozilla/5.0'})
+            current_hash = hashlib.md5(resp.text.encode('utf-8')).hexdigest()
+        except:
+            pass
+
+        if existing_model:
+            old_hash = existing_model.get('content_hash')
+            if old_hash == current_hash and current_hash != "":
+                q.put("✅ Site identificado no histórico (Sem alterações).")
+                q.put("♻️ Recuperando dados do banco de dados...")
+                time.sleep(1)
+                
+                # Simular conclusão rápida usando dados existentes
+                with session_lock:
+                    download_results[sid] = {
+                        'status': 'complete', 
+                        'zip_path': existing_model.get('zip_storage_path'),
+                        'filename': f"{existing_model.get('name')}.zip", 
+                        'model_id': existing_model.get('id'),
+                        'created_at': time.time(),
+                    }
+                q.put("🎉 Dados recuperados com sucesso!")
+                return
+
+            q.put("🔄 Update detectado ou site sem hash. Iniciando nova captura...")
+
+        # --- FIM DA LÓGICA DE CACHE ---
+
         downloader = WebsiteDownloader(url, download_dir, log_callback=log_cb)
         success = downloader.process()
 
@@ -227,6 +262,7 @@ def _process_capture(sid, url):
 
         site_name = get_site_name(url)
         zip_filename = f"{site_name}.zip"
+        model_id = existing_model['id'] if existing_model else str(uuid.uuid4())
 
         # Extract metadata for catalog
         index_path = os.path.join(download_dir, 'index.html')
@@ -250,14 +286,15 @@ def _process_capture(sid, url):
         model_entry = {
             'id': model_id,
             'name': metadata.get('title', site_name),
-            'source_url': url,
+            'url': url,
+            'content_hash': current_hash,
             'niche': metadata.get('niche', 'general'),
             'style': metadata.get('style', 'modern'),
             'fonts': metadata.get('fonts', []),
             'colors': metadata.get('colors', []),
             'zip_storage_path': storage_path or zip_path,
             'metadata': metadata,
-            'created_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+            'last_captured_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
             'has_design_system': False,
         }
         db.upsert_model(model_entry)

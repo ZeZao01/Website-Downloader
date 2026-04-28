@@ -44,12 +44,25 @@ class SupabaseDB:
             print(f"Error fetching model {model_id}: {e}")
             return None
 
+    def get_model_by_url(self, url):
+        if not self.client: return None
+        try:
+            res = self.client.table("models").select("*").eq("url", url).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            print(f"Error fetching model by url: {e}")
+            return None
+
     def upsert_model(self, model_data):
         if not self.client: return None
         try:
-            # We use name as a pseudo-unique for existing cataloging if needed, 
-            # but usually we use UUIDs.
-            res = self.client.table("models").upsert(model_data).execute()
+            url = model_data.get("url")
+            existing = self.get_model_by_url(url) if url else None
+            
+            if existing:
+                res = self.client.table("models").update(model_data).eq("id", existing["id"]).execute()
+            else:
+                res = self.client.table("models").upsert(model_data).execute()
             return res.data
         except Exception as e:
             print(f"Error upserting model: {e}")
