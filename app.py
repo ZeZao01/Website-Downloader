@@ -592,7 +592,7 @@ def download_output(output_id):
 @require_auth
 def list_models():
     if not db.is_ready:
-        return jsonify({'error': '❌ Falha de Conexão com o Supabase.'})
+        return jsonify({'error': f'❌ Falha Crítica de Inicialização Supabase:\n{getattr(db, "last_error", "Erro Desconhecido")}'})
         
     try:
         models = db.get_models()

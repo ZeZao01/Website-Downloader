@@ -16,13 +16,16 @@ class SupabaseDB:
         
         if not url or not key:
             self.client = None
+            self.last_error = f"Missing vars. URL: {bool(url)}, KEY: {bool(key)}"
             print("⚠️ Supabase credentials missing")
         else:
             try:
                 self.client: Client = create_client(url, key)
+                self.last_error = None
                 print("✅ Supabase client initialized")
             except Exception as e:
                 self.client = None
+                self.last_error = f"Init Exception: {str(e)}"
                 print(f"❌ Failed to initialize Supabase: {e}")
 
     @property
