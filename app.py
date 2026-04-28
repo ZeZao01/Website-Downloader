@@ -312,6 +312,10 @@ def _process_capture(sid, url):
 
         if os.path.isdir(download_dir):
             shutil.rmtree(download_dir, ignore_errors=True)
+            
+        # PERSISTENT MEMORY: Save Project first to generate project_id
+        project_id = str(uuid.uuid4())
+        
         with session_lock:
             download_results[sid] = {
                 'status': 'complete', 'zip_path': zip_path,
@@ -319,9 +323,6 @@ def _process_capture(sid, url):
                 'project_id': project_id,
                 'created_at': time.time(),
             }
-        
-        # PERSISTENT MEMORY: Save Project
-        project_id = str(uuid.uuid4())
         db.save_project({
             'id': project_id,
             'name': f"Captura: {metadata.get('title', site_name)}",
