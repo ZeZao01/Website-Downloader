@@ -182,13 +182,13 @@ class Bolt {
                     };
                     this.path.push(next);
                     
-                    // Create sparks
-                    if(Math.random() > 0.7) {
+                    // Reduced spark count for performance
+                    if(Math.random() > 0.85) {
                         this.sparks.push({
                             x: next.x, y: next.y,
-                            vx: (Math.random() - 0.5) * 5,
-                            vy: (Math.random() - 0.5) * 5,
-                            life: 1
+                            vx: (Math.random() - 0.5) * 4,
+                            vy: (Math.random() - 0.5) * 4,
+                            life: 0.8
                         });
                     }
                 }
@@ -239,10 +239,10 @@ class Bolt {
     }
 }
 
-for(let i=0; i<3; i++) bolts.push(new Bolt());
+for(let i=0; i<2; i++) bolts.push(new Bolt()); // Only 2 bolts at a time for performance
 
 function animateBg() {
-    ctx.fillStyle = `rgba(3, 3, 3, ${0.2 - flash})`; 
+    ctx.fillStyle = `rgba(3, 3, 3, 0.4)`; // Faster fade, less processing
     ctx.fillRect(0,0,canvas.width, canvas.height);
     
     if(flash > 0) {
@@ -477,17 +477,23 @@ else alert(d.error);
 
 // STAGE 4: ADAPT
 function runAdaptation(){
-if(!currentModelId||!currentProjectId)return;
-const btn=document.getElementById('adaptBtn');
-btn.disabled=true;btn.textContent='Gerando...';
-fetch('/api/adapt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model_id:currentModelId,project_id:currentProjectId})})
-.then(r=>r.json()).then(d=>{
-btn.disabled=false;btn.textContent='🚀 Gerar Adaptação';
-if(d.success){
-document.getElementById('adaptResult').style.display='block';
-document.getElementById('adaptDownload').href=d.download_url;
-}else alert(d.error);
-});
+    if(!currentModelId) { alert('Por favor, selecione um modelo na Galeria primeiro.'); return; }
+    if(!currentProjectId) { 
+        if(confirm('Nenhum projeto detectado. Deseja ir para a Etapa 3 (Projeto Real) agora?')) {
+            goStage('upload');
+        }
+        return; 
+    }
+    const btn=document.getElementById('adaptBtn');
+    btn.disabled=true;btn.textContent='Gerando...';
+    fetch('/api/adapt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model_id:currentModelId,project_id:currentProjectId})})
+    .then(r=>r.json()).then(d=>{
+        btn.disabled=false;btn.textContent='🚀 Gerar Adaptação';
+        if(d.success){
+            document.getElementById('adaptResult').style.display='block';
+            document.getElementById('adaptDownload').href=d.download_url;
+        }else alert(d.error);
+    });
 }
 
 // GALLERY
@@ -541,9 +547,17 @@ ${models.error}
 
         grid.innerHTML=filtered.map(m=>`
             <div class="model-card" style="animation: fadeIn 0.5s ease forwards;">
-                <div class="model-preview">
-                    <div class="placeholder">🌐</div>
-                    ${m.has_design_system ? '<div class="status-badge success" style="position:absolute;top:10px;right:10px;font-size:0.6rem">🧬 DS OK</div>' : ''}
+                <div class="model-preview" style="background: ${m.screenshot_url ? 'none' : 'linear-gradient(45deg, #111, #222)'}">
+                    ${m.screenshot_url 
+                        ? `<img src="${m.screenshot_url}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;" 
+                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` 
+                        : ''
+                    }
+                    <div class="placeholder" style="${m.screenshot_url ? 'display:none;' : ''}display:flex;flex-direction:column;align-items:center;gap:0.5rem">
+                        <span style="font-size:2rem">⚡</span>
+                        <span style="font-size:0.6rem;opacity:0.5;text-transform:uppercase;letter-spacing:1px">Preview Indisponível</span>
+                    </div>
+                    ${m.has_design_system ? '<div class="status-badge success" style="position:absolute;top:10px;right:10px;font-size:0.6rem;z-index:2">🧬 DS OK</div>' : ''}
                 </div>
                 <div class="model-info">
                     <div class="model-name">${m.name}</div>
@@ -569,7 +583,7 @@ function selectModel(id,name){
     currentModelId=id;
     const selectedDisplay = document.getElementById('selectedModel');
     selectedDisplay.style.animation = 'none';
-    selectedDisplay.offsetHeight; // trigger reflow
+    selectedDisplay.offsetHeight; 
     selectedDisplay.style.animation = 'slideUpFade 0.5s ease';
     selectedDisplay.innerHTML=`<div style="display:flex;align-items:center;gap:1rem">
         <span style="font-size:1.5rem">🎯</span>
@@ -578,10 +592,20 @@ function selectModel(id,name){
             <div style="font-weight:700;color:var(--accent)">${name}</div>
         </div>
     </div>`;
-    document.getElementById('adaptBtn').disabled=!(currentModelId&&currentProjectId);
     
-    // Pequeno delay para o usuário ver a seleção antes de trocar de aba
-    setTimeout(() => goStage('adapt'), 400);
+    // Check if we have a project. If not, try to use the last one from capture
+    if (!currentProjectId) {
+        console.log("⚠️ No project ID in session, checking for active session...");
+    }
+
+    const adaptBtn = document.getElementById('adaptBtn');
+    adaptBtn.disabled = !currentModelId; // Allow adaptation even if project is pending (will alert later)
+    adaptBtn.style.boxShadow = '0 0 20px var(--accent)';
+    
+    setTimeout(() => {
+        goStage('adapt');
+        adaptBtn.style.boxShadow = 'none';
+    }, 400);
 }
 function deleteModel(id){if(confirm('Excluir este modelo?'))fetch('/api/models/'+id,{method:'DELETE'}).then(()=>loadGallery())}
 </script>
