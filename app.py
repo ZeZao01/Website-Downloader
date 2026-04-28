@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 from downloader import WebsiteDownloader, zip_directory, get_site_name
 from extractor import DesignSystemExtractor, extract_metadata_from_html
 from adapter import StructureAdapter, extract_zip_project, create_output_zip
+from database import db
 
 load_dotenv()
 
@@ -57,31 +58,7 @@ message_queues = {}
 download_results = {}
 session_lock = threading.Lock()
 
-# ─── Models catalog (in-memory, synced to disk) ───
-models_catalog = {}
-models_lock = threading.Lock()
-CATALOG_FILE = 'models_catalog.json'
-
-
-def _load_catalog():
-    global models_catalog
-    if os.path.exists(CATALOG_FILE):
-        try:
-            with open(CATALOG_FILE, 'r', encoding='utf-8') as f:
-                models_catalog = json.load(f)
-        except Exception:
-            models_catalog = {}
-
-
-def _save_catalog():
-    try:
-        with open(CATALOG_FILE, 'w', encoding='utf-8') as f:
-            json.dump(models_catalog, f, indent=2, ensure_ascii=False)
-    except Exception:
-        pass
-
-
-_load_catalog()
+# ─── Models catalog handled by database.py ───
 
 
 # ═══════════════════════════════════════════
@@ -181,7 +158,12 @@ def logout():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Recovery Memory: Check for last active project
+    active_project = db.get_last_active_project()
+    if active_project and not session.get('project_id'):
+        session['project_id'] = active_project['id']
+    
+    return render_template('index.html', active_project=active_project)
 
 
 @app.route('/health')
@@ -189,8 +171,8 @@ def health():
     info = {'status': 'ok'}
     with session_lock:
         info['sessions'] = len(download_results)
-    with models_lock:
-        info['models'] = len(models_catalog)
+    models = db.get_models()
+    info['models'] = len(models) if models else 0
     return jsonify(info)
 
 
@@ -257,8 +239,14 @@ def _process_capture(sid, url):
         q.put("📦 Criando arquivo ZIP...")
         zip_directory(download_dir, zip_path)
 
-        # Catalog the model
-        model_id = str(uuid.uuid4())
+        q.put("🎉 Captura concluída e catalogada!")
+        
+        # Upload ZIP to Supabase Storage if possible
+        storage_path = None
+        if db.client:
+            q.put("☁️ Sincronizando com Supabase...")
+            storage_path = db.upload_file("model-zips", f"{model_id}.zip", zip_path)
+
         model_entry = {
             'id': model_id,
             'name': metadata.get('title', site_name),
@@ -267,25 +255,33 @@ def _process_capture(sid, url):
             'style': metadata.get('style', 'modern'),
             'fonts': metadata.get('fonts', []),
             'colors': metadata.get('colors', []),
-            'zip_path': zip_path,
-            'download_dir': download_dir,
+            'zip_storage_path': storage_path or zip_path,
+            'metadata': metadata,
             'created_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
             'has_design_system': False,
         }
-        with models_lock:
-            models_catalog[model_id] = model_entry
-            _save_catalog()
+        db.upsert_model(model_entry)
 
         if os.path.isdir(download_dir):
             shutil.rmtree(download_dir, ignore_errors=True)
-
-        q.put("🎉 Captura concluída e catalogada!")
         with session_lock:
             download_results[sid] = {
                 'status': 'complete', 'zip_path': zip_path,
                 'filename': zip_filename, 'model_id': model_id,
                 'created_at': time.time(),
             }
+        
+        # PERSISTENT MEMORY: Save Project
+        project_id = str(uuid.uuid4())
+        db.save_project({
+            'id': project_id,
+            'name': f"Captura: {metadata.get('title', site_name)}",
+            'status': 'captured',
+            'design_system_id': model_id,
+            'original_structure': {'url': url, 'sid': sid},
+            'created_at': time.strftime('%Y-%m-%dT%H:%M:%S')
+        })
+        session['project_id'] = project_id
     except Exception as e:
         q.put(f"❌ Erro: {str(e)}")
         with session_lock:
@@ -347,14 +343,21 @@ def extract_design_system():
     if not model_id:
         return jsonify({'error': 'model_id required'}), 400
 
-    with models_lock:
-        model = models_catalog.get(model_id)
+    model = db.get_model(model_id)
     if not model:
         return jsonify({'error': 'Model not found'}), 404
 
-    zip_path = model.get('zip_path')
-    if not zip_path or not os.path.exists(zip_path):
-        return jsonify({'error': 'Model ZIP not found on disk'}), 404
+    zip_path = model.get('zip_path') or os.path.join(DOWNLOAD_FOLDER, f"{model_id}.zip")
+    if not os.path.exists(zip_path):
+        # Try to download from storage if not on disk
+        storage_path = model.get('zip_storage_path')
+        if storage_path and storage_path.startswith('http'):
+            import requests
+            r = requests.get(storage_path)
+            with open(zip_path, 'wb') as f:
+                f.write(r.content)
+        else:
+            return jsonify({'error': 'Model ZIP not found'}), 404
 
     try:
         extract_dir = os.path.join(DOWNLOAD_FOLDER, f"extract_{model_id}")
@@ -376,10 +379,9 @@ def extract_design_system():
         extractor = DesignSystemExtractor(html, model.get('source_url', ''))
         ds_data = extractor.extract_all()
 
-        with models_lock:
-            models_catalog[model_id]['design_system'] = ds_data
-            models_catalog[model_id]['has_design_system'] = True
-            _save_catalog()
+        model['design_system'] = ds_data
+        model['has_design_system'] = True
+        db.upsert_model(model)
 
         shutil.rmtree(extract_dir, ignore_errors=True)
         return jsonify({'success': True, 'design_system': ds_data})
@@ -479,8 +481,7 @@ def adapt_project():
     if not model_id or not project_id:
         return jsonify({'error': 'model_id and project_id required'}), 400
 
-    with models_lock:
-        model = models_catalog.get(model_id)
+    model = db.get_model(model_id)
     if not model or not model.get('design_system'):
         return jsonify({'error': 'Model or design system not found'}), 404
 
@@ -498,6 +499,17 @@ def adapt_project():
         zip_path = os.path.join(OUTPUT_FOLDER, f"{output_id}.zip")
         create_output_zip(output_dir, zip_path)
         shutil.rmtree(output_dir, ignore_errors=True)
+
+        # Save project to Supabase
+        project_entry = {
+            'id': project_id,
+            'name': f"Adapted from {model.get('name', model_id[:8])}",
+            'source_type': 'upload',
+            'selected_model_id': model_id,
+            'adaptation_status': 'complete',
+            'adaptation_result_path': zip_path
+        }
+        db.save_project(project_entry)
 
         return jsonify({
             'success': True,
@@ -524,28 +536,27 @@ def download_output(output_id):
 @app.route('/api/models')
 @require_auth
 def list_models():
-    with models_lock:
-        models_list = []
-        for mid, m in models_catalog.items():
-            models_list.append({
-                'id': mid,
-                'name': m.get('name', ''),
-                'source_url': m.get('source_url', ''),
-                'niche': m.get('niche', ''),
-                'style': m.get('style', ''),
-                'colors': m.get('colors', [])[:5],
-                'fonts': m.get('fonts', [])[:3],
-                'has_design_system': m.get('has_design_system', False),
-                'created_at': m.get('created_at', ''),
-            })
+    models = db.get_models()
+    models_list = []
+    for m in models:
+        models_list.append({
+            'id': m.get('id'),
+            'name': m.get('name', ''),
+            'source_url': m.get('source_url', ''),
+            'niche': m.get('niche', ''),
+            'style': m.get('style', ''),
+            'colors': m.get('colors', [])[:5],
+            'fonts': m.get('fonts', [])[:3],
+            'has_design_system': m.get('has_design_system', False),
+            'created_at': m.get('created_at', ''),
+        })
     return jsonify(models_list)
 
 
 @app.route('/api/models/<model_id>')
 @require_auth
 def get_model(model_id):
-    with models_lock:
-        model = models_catalog.get(model_id)
+    model = db.get_model(model_id)
     if not model:
         return jsonify({'error': 'Not found'}), 404
     return jsonify(model)
@@ -554,12 +565,11 @@ def get_model(model_id):
 @app.route('/api/models/<model_id>/download')
 @require_auth
 def download_model(model_id):
-    with models_lock:
-        model = models_catalog.get(model_id)
+    model = db.get_model(model_id)
     if not model:
         return "Not found", 404
-    zip_path = model.get('zip_path')
-    if not zip_path or not os.path.exists(zip_path):
+    zip_path = model.get('zip_path') or os.path.join(DOWNLOAD_FOLDER, f"{model_id}.zip")
+    if not os.path.exists(zip_path):
         return "File not found", 404
     name = model.get('name', model_id[:8])
     return send_file(zip_path, as_attachment=True, download_name=f"{name}.zip")
@@ -568,11 +578,12 @@ def download_model(model_id):
 @app.route('/api/models/<model_id>', methods=['DELETE'])
 @require_auth
 def delete_model(model_id):
-    with models_lock:
-        model = models_catalog.pop(model_id, None)
-        _save_catalog()
+    model = db.get_model(model_id)
     if not model:
         return jsonify({'error': 'Not found'}), 404
+    
+    db.delete_model(model_id)
+    
     zip_path = model.get('zip_path')
     if zip_path and os.path.exists(zip_path):
         try:

@@ -9,6 +9,7 @@ import os
 import json
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import requests
 
 
 class DesignSystemExtractor:
@@ -45,6 +46,7 @@ class DesignSystemExtractor:
         self._extract_layout()
         self._extract_motion()
         self._extract_icons()
+        self._refine_with_ai()
         return self.data
 
     def _extract_meta(self):
@@ -191,6 +193,52 @@ class DesignSystemExtractor:
                 'height': h,
                 'html': str(svg)[:800],
             })
+
+    def _refine_with_ai(self):
+        """Use Groq to refine the extracted data (niche, style, suggestions)."""
+        api_key = os.getenv('GROQ_API_KEY')
+        if not api_key:
+            return
+
+        model = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')
+        
+        # Simple prompt to categorize based on extracted text
+        text_sample = self.soup.get_text()[:2000]
+        prompt = f"""Analyze this website text and provide a JSON with:
+1. niche (one of: saas-ai, dashboard, portfolio, medical, automotive, ecommerce, landing, social, general)
+2. style (comma separated: glass, dark, light, parallax, animation, gradient, minimal, modern)
+3. primary_fonts (list of font names)
+4. color_palette (list of hex codes)
+
+Website Text:
+{text_sample}
+
+Return ONLY valid JSON."""
+
+        try:
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": model,
+                "messages": [{"role": "user", "content": prompt}],
+                "response_format": {"type": "json_object"}
+            }
+            res = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=10)
+            if res.status_code == 200:
+                ai_data = res.json()['choices'][0]['message']['content']
+                parsed = json.loads(ai_data)
+                self.data['niche'] = parsed.get('niche', self.data.get('niche', 'general'))
+                self.data['style'] = parsed.get('style', self.data.get('style', 'modern'))
+                if parsed.get('primary_fonts'):
+                    self.data['fonts'].extend(parsed['primary_fonts'])
+                    self.data['fonts'] = list(set(self.data['fonts']))
+                if parsed.get('color_palette'):
+                    self.data['colors'].extend(parsed['color_palette'])
+                    self.data['colors'] = list(set(self.data['colors']))
+        except Exception as e:
+            print(f"Groq Refinement Error: {e}")
 
     def to_json(self):
         return json.dumps(self.data, indent=2, ensure_ascii=False)

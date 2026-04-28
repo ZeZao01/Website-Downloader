@@ -1,35 +1,16 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
-
-# Virtual environments
-.venv
-venv/
-env/
-
-# Downloads folder (temporary files)
-downloads/*
-!downloads/.gitkeep
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Environment variables
+# Gravit Design Factory - Git Ignore
 .env
-.env.local
-
-# Uploads and outputs (user data)
-uploads/
-outputs/
+__pycache__/
+*.pyc
+venv/
+.venv
+node_modules/
+.DS_Store
 models_catalog.json
+downloaded_sites/
+projects/
+adaptation_outputs/
+Formação AI Designer - Asimov/
+build.sh
+*.zip
+*.log

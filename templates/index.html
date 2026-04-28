@@ -132,6 +132,32 @@
 <script>
 let currentModelId=null,currentProjectId=null,activeFilter='all';
 
+// RECOVERY MEMORY: Auto-restore state
+window.addEventListener('DOMContentLoaded', () => {
+    const activeProject = {{ active_project|tojson if active_project else 'null' }};
+    if (activeProject) {
+        console.log("🧠 Memória: Restaurando projeto", activeProject.id);
+        currentProjectId = activeProject.id;
+        currentModelId = activeProject.design_system_id;
+        
+        document.getElementById('selectedProject').innerHTML = `<strong>${activeProject.name}</strong> — Recuperado`;
+        if (activeProject.status === 'captured') {
+            document.getElementById('uploadSuccess').style.display = 'block';
+        }
+        
+        // Se já tiver modelo, atualiza a UI da etapa 4
+        if (currentModelId) {
+            fetch(`/api/models`).then(r=>r.json()).then(models => {
+                const model = models.find(m => m.id === currentModelId);
+                if (model) {
+                    document.getElementById('selectedModel').innerHTML = `<strong>${model.name}</strong> — Selecionado`;
+                    document.getElementById('adaptBtn').disabled = !(currentModelId && currentProjectId);
+                }
+            });
+        }
+    }
+});
+
 // AUTH
 document.getElementById('authPassword').addEventListener('keypress',e=>{if(e.key==='Enter')doAuth()});
 function doAuth(){

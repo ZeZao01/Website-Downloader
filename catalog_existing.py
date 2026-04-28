@@ -9,6 +9,7 @@ import json
 import uuid
 import time
 from extractor import extract_metadata_from_html
+from database import db
 
 ASIMOV_DIR = os.path.join(os.path.dirname(__file__), 'Formação AI Designer - Asimov')
 CATALOG_FILE = 'models_catalog.json'
@@ -61,6 +62,23 @@ def catalog_folder(folder, model_type):
             'created_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
         }
         print(f"    ✅ {meta.get('title', name)} | {meta.get('niche')} | {meta.get('style')}")
+
+        # Sync to Supabase
+        if db.client:
+            print(f"    ☁️ Sincronizando {name} com Supabase...")
+            # We don't upload the actual ZIP here to save bandwidth, 
+            # but we catalog the entry.
+            db.upsert_model({
+                'id': model_id,
+                'name': meta.get('title', name),
+                'niche': meta.get('niche', 'general'),
+                'style': meta.get('style', 'modern'),
+                'fonts': meta.get('fonts', []),
+                'colors': meta.get('colors', []),
+                'metadata': meta,
+                'created_at': time.strftime('%Y-%m-%dT%H:%M:%S'),
+                'has_design_system': has_ds
+            })
 
     return entries
 

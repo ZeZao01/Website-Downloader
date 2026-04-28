@@ -11,6 +11,7 @@ import zipfile
 import shutil
 import tempfile
 from bs4 import BeautifulSoup
+import requests
 
 
 class StructureAdapter:
@@ -148,6 +149,48 @@ class StructureAdapter:
 
         return '\n'.join(guide)
 
+    def generate_ai_adaptation_plan(self, structure):
+        """Use OpenRouter to generate a detailed adaptation plan."""
+        api_key = os.getenv('OPENROUTER_API_KEY')
+        if not api_key:
+            return None
+
+        model = os.getenv('OPENROUTER_MODEL', 'anthropic/claude-sonnet-4')
+        
+        prompt = f"""You are a senior frontend architect. 
+Adapt the following Design System to the structure of the Real Project.
+
+DESIGN SYSTEM:
+{json.dumps(self.ds, indent=2)[:4000]}
+
+PROJECT STRUCTURE:
+{json.dumps(structure, indent=2)}
+
+TASK:
+1. Map the Design System components (buttons, cards, inputs) to the project files.
+2. Provide specific code snippets to replace classes in the project.
+3. Suggest a new CSS architecture based on the design system variables.
+
+Return a detailed markdown report."""
+
+        try:
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "HTTP-Referer": "https://gravit.design", # Optional
+                "X-Title": "Gravit Design Factory", # Optional
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "model": model,
+                "messages": [{"role": "user", "content": prompt}]
+            }
+            res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=30)
+            if res.status_code == 200:
+                return res.json()['choices'][0]['message']['content']
+        except Exception as e:
+            print(f"OpenRouter Adaptation Error: {e}")
+        return None
+
     def create_adaptation_package(self, output_dir):
         """Create the full adaptation package."""
         self.log("📦 Criando pacote de adaptação...")
@@ -163,9 +206,15 @@ class StructureAdapter:
 
         # 2. Adaptation Guide
         guide = self.generate_adaptation_guide(structure)
+        ai_plan = self.generate_ai_adaptation_plan(structure)
+        
         guide_path = os.path.join(output_dir, 'adaptation-guide.md')
         with open(guide_path, 'w', encoding='utf-8') as f:
             f.write(guide)
+            if ai_plan:
+                f.write("\n\n---\n\n")
+                f.write("# Plano de Adaptação Inteligente (AI)\n\n")
+                f.write(ai_plan)
 
         # 3. Design System Data (JSON)
         data_path = os.path.join(output_dir, 'design-system-data.json')

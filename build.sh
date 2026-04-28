@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
-set -e
+# Exit on error
+set -o errexit
 
-echo "Installing Python dependencies..."
+# Install python dependencies
 pip install -r requirements.txt
 
-echo "Installing Playwright Chromium..."
-playwright install chromium
-
-echo "Attempting to install system dependencies (may fail, that's ok)..."
-playwright install-deps chromium || echo "System deps install failed, continuing..."
-
-echo "Build completed successfully!"
+# Install Playwright and its browsers
+playwright install --with-deps chromium

@@ -1,8 +1,21 @@
 services:
   - type: web
-    name: website-downloader
-    env: docker
-    dockerfilePath: ./Dockerfile
+    name: gravit-design-factory
+    env: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn --worker-class sync --workers 1 --bind 0.0.0.0:$PORT --timeout 600 app:app
     envVars:
-      - key: PORT
-        value: 8080
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: FLASK_ENV
+        value: production
+      - fromContext: true
+        key: SUPABASE_URL
+      - fromContext: true
+        key: SUPABASE_SERVICE_ROLE_KEY
+      - fromContext: true
+        key: GROQ_API_KEY
+      - fromContext: true
+        key: OPENROUTER_API_KEY
+      - fromContext: true
+        key: DESIGN_FACTORY_PASSWORD

@@ -1,0 +1,95 @@
+
+import os
+import json
+from supabase import create_client, Client
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class SupabaseDB:
+    def __init__(self):
+        url = os.getenv("SUPABASE_URL")
+        key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY")
+        if not url or not key:
+            self.client = None
+            print("⚠️ Supabase credentials missing")
+        else:
+            self.client: Client = create_client(url, key)
+
+    def get_models(self):
+        if not self.client: return []
+        try:
+            res = self.client.table("models").select("*").order("created_at", desc=True).execute()
+            return res.data
+        except Exception as e:
+            print(f"Error fetching models: {e}")
+            return []
+
+    def get_model(self, model_id):
+        if not self.client: return None
+        try:
+            res = self.client.table("models").select("*").eq("id", model_id).single().execute()
+            return res.data
+        except Exception as e:
+            print(f"Error fetching model {model_id}: {e}")
+            return None
+
+    def upsert_model(self, model_data):
+        if not self.client: return None
+        try:
+            # We use name as a pseudo-unique for existing cataloging if needed, 
+            # but usually we use UUIDs.
+            res = self.client.table("models").upsert(model_data).execute()
+            return res.data
+        except Exception as e:
+            print(f"Error upserting model: {e}")
+            return None
+
+    def delete_model(self, model_id):
+        if not self.client: return False
+        try:
+            self.client.table("models").delete().eq("id", model_id).execute()
+            return True
+        except Exception as e:
+            print(f"Error deleting model: {e}")
+            return False
+
+    def save_project(self, project_data):
+        if not self.client: return None
+        try:
+            res = self.client.table("projects").insert(project_data).execute()
+            return res.data
+        except Exception as e:
+            print(f"Error saving project: {e}")
+            return None
+
+    def update_project(self, project_id, update_data):
+        if not self.client: return None
+        try:
+            res = self.client.table("projects").update(update_data).eq("id", project_id).execute()
+            return res.data
+        except Exception as e:
+            print(f"Error updating project: {e}")
+            return None
+
+    def get_last_active_project(self):
+        """Recover the most recent project that isn't finished."""
+        if not self.client: return None
+        try:
+            res = self.client.table("projects").select("*").neq("status", "completed").order("created_at", desc=True).limit(1).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            print(f"Error recovering project: {e}")
+            return None
+
+    def upload_file(self, bucket, remote_path, local_path):
+        if not self.client: return None
+        try:
+            with open(local_path, 'rb') as f:
+                res = self.client.storage.from_(bucket).upload(remote_path, f, {"upsert": "true"})
+            return self.client.storage.from_(bucket).get_public_url(remote_path)
+        except Exception as e:
+            print(f"Error uploading file to {bucket}: {e}")
+            return None
+
+db = SupabaseDB()
