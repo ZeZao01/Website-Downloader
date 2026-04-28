@@ -139,53 +139,89 @@
 <script>
 let currentModelId=null,currentProjectId=null,activeFilter='all';
 
-// MOUSE TRACKING & BG ANIMATION
+// ELECTRIC LIGHTNING BG ANIMATION
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
-let points = [];
+let bolts = [];
 const mouse = { x: null, y: null };
 
 function initBg() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    points = [];
-    for(let i=0; i<40; i++) {
-        points.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
-            size: Math.random() * 2 + 1
-        });
+}
+
+class Bolt {
+    constructor() {
+        this.reset();
+    }
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = 0;
+        this.path = [{x: this.x, y: 0}];
+        this.state = 'waiting';
+        this.timer = Math.random() * 100;
+        this.opacity = 0;
+    }
+    update() {
+        if(this.state === 'waiting') {
+            this.timer--;
+            if(this.timer <= 0) this.state = 'striking';
+        } else if(this.state === 'striking') {
+            const last = this.path[this.path.length-1];
+            if(last.y < canvas.height) {
+                for(let i=0; i<3; i++) {
+                    const next = {
+                        x: last.x + (Math.random() - 0.5) * 40,
+                        y: last.y + Math.random() * 20
+                    };
+                    this.path.push(next);
+                    if(next.y >= canvas.height) break;
+                }
+            } else {
+                this.state = 'fading';
+                this.opacity = 1;
+            }
+        } else {
+            this.opacity -= 0.05;
+            if(this.opacity <= 0) this.reset();
+        }
+    }
+    draw() {
+        if(this.state === 'waiting') return;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255, 255, 200, ${this.opacity})`;
+        ctx.shadowColor = '#fffce0';
+        ctx.shadowBlur = 15;
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(this.path[0].x, this.path[0].y);
+        for(let i=1; i<this.path.length; i++) {
+            ctx.lineTo(this.path[i].x, this.path[i].y);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
     }
 }
 
+for(let i=0; i<3; i++) bolts.push(new Bolt());
+
 function animateBg() {
-    ctx.clearRect(0,0,canvas.width, canvas.height);
-    ctx.fillStyle = 'rgba(99, 102, 241, 0.1)';
+    ctx.fillStyle = 'rgba(3, 3, 3, 0.2)'; // Rastro de movimento
+    ctx.fillRect(0,0,canvas.width, canvas.height);
     
-    points.forEach(p => {
-        p.x += p.vx; p.y += p.vy;
-        if(p.x<0 || p.x>canvas.width) p.vx *= -1;
-        if(p.y<0 || p.y>canvas.height) p.vy *= -1;
-        
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-        ctx.fill();
-        
-        // Connect to mouse
-        if(mouse.x) {
-            const dist = Math.hypot(p.x - mouse.x, p.y - mouse.y);
-            if(dist < 200) {
-                ctx.strokeStyle = `rgba(99, 102, 241, ${1 - dist/200})`;
-                ctx.lineWidth = 0.5;
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(mouse.x, mouse.y);
-                ctx.stroke();
-            }
-        }
+    bolts.forEach(b => {
+        b.update();
+        b.draw();
     });
+    
+    // Pequeno brilho no mouse
+    if(mouse.x) {
+        const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 150);
+        grad.addColorStop(0, 'rgba(255, 255, 200, 0.08)');
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+    }
+    
     requestAnimationFrame(animateBg);
 }
 
@@ -234,16 +270,16 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // AUTH
-document.getElementById('authPassword').addEventListener('keypress',e=>{if(e.key==='Enter')doAuth()});
-function doAuth(){
-const pw=document.getElementById('authPassword').value;
+document.getElementById('authPass').addEventListener('keypress',e=>{if(e.key==='Enter')checkAuth()});
+function checkAuth(){
+const pw=document.getElementById('authPass').value;
 if(!pw)return;
 const btn=document.getElementById('authBtn');
 btn.disabled=true;
 fetch('/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
 .then(r=>r.json().then(d=>({status:r.status,...d})))
 .then(d=>{
-if(d.success){document.getElementById('authGate').style.display='none';document.getElementById('mainApp').style.display='flex';loadModels();loadGallery()}
+if(d.success){document.getElementById('authOverlay').style.display='none';document.getElementById('mainApp').style.display='flex';loadModels();loadGallery()}
 else{
 document.getElementById('authError').textContent=d.message||'Senha incorreta';
 document.querySelector('.auth-card').classList.add('shake');
