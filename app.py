@@ -534,38 +534,68 @@ def adapt_project():
     model_id = data.get('model_id')
     project_id = data.get('project_id')
 
-    if not model_id or not project_id:
-        return jsonify({'error': 'model_id and project_id required'}), 400
+    if not model_id:
+        return jsonify({'error': 'model_id required'}), 400
 
     model = db.get_model(model_id)
-    if not model or not model.get('design_system'):
-        return jsonify({'error': 'Model or design system not found'}), 404
+    if not model:
+        return jsonify({'error': f'Modelo não encontrado no banco (ID: {model_id[:8]}...)'}), 404
 
-    project_dir = os.path.join(UPLOAD_FOLDER, project_id)
-    if not os.path.isdir(project_dir):
-        return jsonify({'error': 'Project not found'}), 404
+    # Build design system data - use extracted DS if available, otherwise build minimal from metadata
+    ds_data = model.get('design_system')
+    if not ds_data:
+        ds_data = {
+            'title': model.get('name', 'Untitled'),
+            'colors': model.get('colors', []),
+            'fonts': model.get('fonts', []),
+            'typography': [],
+            'components': {},
+            'layout': [],
+            'motion': {},
+            'icons': [],
+        }
+
+    # Determine project directory
+    project_dir = None
+    if project_id:
+        candidate = os.path.join(UPLOAD_FOLDER, project_id)
+        if os.path.isdir(candidate):
+            project_dir = candidate
+
+    # If no project dir exists, create a minimal placeholder so adapter can still generate the package
+    if not project_dir:
+        project_dir = os.path.join(UPLOAD_FOLDER, f"placeholder_{model_id[:8]}")
+        os.makedirs(project_dir, exist_ok=True)
+        # Create a minimal index.html so the adapter has something to work with
+        placeholder_html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><title>{model.get('name', 'Projeto')}</title>
+<link rel="stylesheet" href="design-system-variables.css"></head>
+<body>
+<h1>{model.get('name', 'Projeto')}</h1>
+<p>Aplique o Design System conforme o guia de adaptação.</p>
+</body></html>"""
+        with open(os.path.join(project_dir, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(placeholder_html)
 
     try:
         output_id = str(uuid.uuid4())
         output_dir = os.path.join(OUTPUT_FOLDER, output_id)
 
-        adapter = StructureAdapter(model['design_system'], project_dir)
+        adapter = StructureAdapter(ds_data, project_dir)
         adapter.create_adaptation_package(output_dir)
 
         zip_path = os.path.join(OUTPUT_FOLDER, f"{output_id}.zip")
         create_output_zip(output_dir, zip_path)
         shutil.rmtree(output_dir, ignore_errors=True)
 
-        # Save project to Supabase
-        project_entry = {
-            'id': project_id,
-            'name': f"Adapted from {model.get('name', model_id[:8])}",
-            'source_type': 'upload',
-            'selected_model_id': model_id,
-            'adaptation_status': 'complete',
-            'adaptation_result_path': zip_path
-        }
-        db.save_project(project_entry)
+        # Update project in Supabase
+        if project_id:
+            db.update_project(project_id, {
+                'selected_model_id': model_id,
+                'adaptation_status': 'complete',
+                'adaptation_result_path': zip_path
+            })
 
         return jsonify({
             'success': True,
@@ -573,7 +603,8 @@ def adapt_project():
             'download_url': f'/api/download-output/{output_id}',
         })
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        import traceback
+        return jsonify({'error': f'{str(e)}\n{traceback.format_exc()}'}), 500
 
 
 @app.route('/api/download-output/<output_id>')
@@ -597,27 +628,12 @@ def list_models():
         
     try:
         models = db.get_models()
-        if not models and models != []:
+        if models is None:
             return jsonify({'error': '❌ O Supabase não retornou dados. Verifique o RLS ou se a tabela "models" existe.'})
         return jsonify(models)
     except Exception as e:
         import traceback
         return jsonify({'error': f'DEBUG: {str(e)}\n{traceback.format_exc()}'}), 500
-
-    models_list = []
-    for m in models:
-        models_list.append({
-            'id': m.get('id'),
-            'name': m.get('name', ''),
-            'source_url': m.get('source_url', ''),
-            'niche': m.get('niche', ''),
-            'style': m.get('style', ''),
-            'colors': m.get('colors', [])[:5],
-            'fonts': m.get('fonts', [])[:3],
-            'has_design_system': m.get('has_design_system', False),
-            'created_at': m.get('created_at', ''),
-        })
-    return jsonify(models_list)
 
 
 @app.route('/api/models/<model_id>')

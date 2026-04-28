@@ -478,21 +478,29 @@ else alert(d.error);
 // STAGE 4: ADAPT
 function runAdaptation(){
     if(!currentModelId) { alert('Por favor, selecione um modelo na Galeria primeiro.'); return; }
-    if(!currentProjectId) { 
-        if(confirm('Nenhum projeto detectado. Deseja ir para a Etapa 3 (Projeto Real) agora?')) {
-            goStage('upload');
-        }
-        return; 
-    }
+    
     const btn=document.getElementById('adaptBtn');
-    btn.disabled=true;btn.textContent='Gerando...';
-    fetch('/api/adapt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model_id:currentModelId,project_id:currentProjectId})})
+    btn.disabled=true;btn.textContent='⚡ Gerando...';
+    
+    const payload = { model_id: currentModelId };
+    if(currentProjectId) payload.project_id = currentProjectId;
+    
+    fetch('/api/adapt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
     .then(r=>r.json()).then(d=>{
         btn.disabled=false;btn.textContent='🚀 Gerar Adaptação';
         if(d.success){
             document.getElementById('adaptResult').style.display='block';
             document.getElementById('adaptDownload').href=d.download_url;
-        }else alert(d.error);
+        } else {
+            document.getElementById('adaptResult').style.display='block';
+            document.getElementById('adaptResult').innerHTML = `
+                <span class="status-badge" style="background:var(--red)">❌ Erro</span>
+                <pre style="margin-top:0.5rem;font-size:0.7rem;color:#ffca28;background:#111;padding:1rem;border-radius:8px;white-space:pre-wrap">${d.error}</pre>
+            `;
+        }
+    }).catch(err=>{
+        btn.disabled=false;btn.textContent='🚀 Gerar Adaptação';
+        alert('Erro de rede: ' + err.message);
     });
 }
 
@@ -581,10 +589,9 @@ c.classList.add('active');activeFilter=c.dataset.filter;loadGallery();
 });
 function selectModel(id,name){
     currentModelId=id;
+    
+    // Update the display in Stage 4
     const selectedDisplay = document.getElementById('selectedModel');
-    selectedDisplay.style.animation = 'none';
-    selectedDisplay.offsetHeight; 
-    selectedDisplay.style.animation = 'slideUpFade 0.5s ease';
     selectedDisplay.innerHTML=`<div style="display:flex;align-items:center;gap:1rem">
         <span style="font-size:1.5rem">🎯</span>
         <div>
@@ -593,19 +600,11 @@ function selectModel(id,name){
         </div>
     </div>`;
     
-    // Check if we have a project. If not, try to use the last one from capture
-    if (!currentProjectId) {
-        console.log("⚠️ No project ID in session, checking for active session...");
-    }
-
-    const adaptBtn = document.getElementById('adaptBtn');
-    adaptBtn.disabled = !currentModelId; // Allow adaptation even if project is pending (will alert later)
-    adaptBtn.style.boxShadow = '0 0 20px var(--accent)';
+    // Always enable the adapt button - backend handles missing project gracefully
+    document.getElementById('adaptBtn').disabled = false;
     
-    setTimeout(() => {
-        goStage('adapt');
-        adaptBtn.style.boxShadow = 'none';
-    }, 400);
+    // Navigate to adapt stage
+    setTimeout(() => goStage('adapt'), 300);
 }
 function deleteModel(id){if(confirm('Excluir este modelo?'))fetch('/api/models/'+id,{method:'DELETE'}).then(()=>loadGallery())}
 </script>
