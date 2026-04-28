@@ -242,8 +242,14 @@ class Bolt {
 for(let i=0; i<3; i++) bolts.push(new Bolt());
 
 function animateBg() {
-    ctx.fillStyle = 'rgba(3, 3, 3, 0.2)'; // Rastro de movimento
+    ctx.fillStyle = `rgba(3, 3, 3, ${0.2 - flash})`; 
     ctx.fillRect(0,0,canvas.width, canvas.height);
+    
+    if(flash > 0) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${flash})`;
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        flash -= 0.05;
+    }
     
     bolts.forEach(b => {
         b.update();
@@ -275,6 +281,21 @@ document.addEventListener('mousemove', e => {
         card.style.setProperty('--mouse-x', `${x}%`);
         card.style.setProperty('--mouse-y', `${y}%`);
     });
+});
+
+// CLICK TO STRIKE (ZENITSU)
+let flash = 0;
+canvas.addEventListener('mousedown', e => {
+    flash = 0.5;
+    for(let i=0; i<8; i++) {
+        const b = new Bolt();
+        b.x = e.clientX;
+        b.y = e.clientY;
+        b.tx = b.x + (Math.random() - 0.5) * 1000;
+        b.ty = b.y + (Math.random() - 0.5) * 500;
+        b.state = 'striking';
+        bolts.push(b);
+    }
 });
 
 initBg();

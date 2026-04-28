@@ -8,12 +8,11 @@ load_dotenv()
 
 class SupabaseDB:
     def __init__(self):
+        self._init_client()
+
+    def _init_client(self):
         url = os.getenv("SUPABASE_URL")
         key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY")
-        
-        # DEBUG LOGS FOR DEPLOYMENT
-        if not url: print("❌ Error: SUPABASE_URL not found in environment")
-        if not key: print("❌ Error: SUPABASE_SERVICE_ROLE_KEY/SUPABASE_KEY not found in environment")
         
         if not url or not key:
             self.client = None
@@ -25,6 +24,12 @@ class SupabaseDB:
             except Exception as e:
                 self.client = None
                 print(f"❌ Failed to initialize Supabase: {e}")
+
+    @property
+    def is_ready(self):
+        if not self.client:
+            self._init_client()
+        return self.client is not None
 
     def get_models(self):
         if not self.client: return []

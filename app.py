@@ -591,8 +591,8 @@ def download_output(output_id):
 @app.route('/api/models')
 @require_auth
 def list_models():
-    if not db.client:
-        return jsonify({'error': '❌ Falha de Conexão com o Supabase. Verifique as chaves de API no Railway ou no arquivo .env.'})
+    if not db.is_ready:
+        return jsonify({'error': '❌ Falha de Conexão com o Supabase.'})
         
     models = db.get_models()
     if not models and models != []:

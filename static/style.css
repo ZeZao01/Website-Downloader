@@ -1,16 +1,16 @@
 :root {
     --bg: #030303;
-    --sidebar-bg: rgba(8, 8, 12, 0.9);
-    --card-bg: rgba(15, 15, 20, 0.7);
-    --accent: #6366f1;
-    --accent-glow: rgba(99, 102, 241, 0.4);
+    --sidebar-bg: rgba(5, 5, 5, 0.95);
+    --card-bg: rgba(10, 10, 10, 0.7);
+    --accent: #ffe600;
+    --accent-glow: rgba(255, 230, 0, 0.5);
     --text: #ffffff;
-    --text2: #cbd5e1;
+    --text2: #e2e8f0;
     --text3: #94a3b8;
-    --border: rgba(255, 255, 255, 0.08);
-    --glass: blur(16px) saturate(180%);
-    --red: #f43f5e;
-    --panel-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    --border: rgba(255, 230, 0, 0.15);
+    --glass: blur(25px) saturate(200%);
+    --red: #ff3e3e;
+    --panel-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
 }
 
 #bgCanvas {
@@ -159,10 +159,11 @@ body::before {
 }
 
 .nav-item.active {
-    background: linear-gradient(135deg, var(--accent), #4f46e5);
-    color: white;
-    box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
-    border-color: rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, var(--accent), #fff);
+    color: #000;
+    box-shadow: 0 0 30px rgba(255, 230, 0, 0.4);
+    border-color: #ffe600;
+    font-weight: 800;
 }
 
 .nav-item span:first-child {
