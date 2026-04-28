@@ -594,10 +594,15 @@ def list_models():
     if not db.is_ready:
         return jsonify({'error': '❌ Falha de Conexão com o Supabase.'})
         
-    models = db.get_models()
-    if not models and models != []:
-        return jsonify({'error': '❌ O Supabase não retornou dados. Verifique se o RLS (Row Level Security) está desativado.'})
-        
+    try:
+        models = db.get_models()
+        if not models and models != []:
+            return jsonify({'error': '❌ O Supabase não retornou dados. Verifique o RLS ou se a tabela "models" existe.'})
+        return jsonify(models)
+    except Exception as e:
+        import traceback
+        return jsonify({'error': f'DEBUG: {str(e)}\n{traceback.format_exc()}'}), 500
+
     models_list = []
     for m in models:
         models_list.append({

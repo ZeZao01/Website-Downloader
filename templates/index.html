@@ -251,19 +251,32 @@ function animateBg() {
         flash -= 0.05;
     }
     
+    // ELECTRIC MOUSE SPARKS
+    if(mouse.x && mouse.y) {
+        if(Math.random() > 0.5) {
+            bolts.push({
+                update: function() { this.life -= 0.1; this.x += (Math.random()-0.5)*10; this.y += (Math.random()-0.5)*10; },
+                draw: function() {
+                    if(this.life <= 0) return;
+                    ctx.fillStyle = `rgba(255, 255, 150, ${this.life})`;
+                    ctx.fillRect(this.x, this.y, 2, 2);
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${this.life * 0.5})`;
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + (Math.random()-0.5)*15, this.y + (Math.random()-0.5)*15);
+                    ctx.stroke();
+                },
+                x: mouse.x, y: mouse.y, life: 1, isSpark: true
+            });
+        }
+    }
+    
+    bolts = bolts.filter(b => (b.isSpark ? b.life > 0 : b.opacity > 0 || b.state !== 'fading'));
+
     bolts.forEach(b => {
         b.update();
         b.draw();
     });
-    
-    // Pequeno brilho no mouse
-    if(mouse.x) {
-        const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 150);
-        grad.addColorStop(0, 'rgba(255, 255, 200, 0.08)');
-        grad.addColorStop(1, 'transparent');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0,0,canvas.width, canvas.height);
-    }
     
     requestAnimationFrame(animateBg);
 }
@@ -487,7 +500,16 @@ function loadGallery(){
         if(models.error) {
             grid.innerHTML='';
             empty.style.display='block';
-            empty.innerHTML = `<h3 style="color:var(--red);margin-bottom:1rem">${models.error}</h3>`;
+            empty.innerHTML = `
+                <div style="background: rgba(255,0,0,0.1); border: 2px solid var(--red); padding: 2rem; border-radius: 20px; text-align: left; max-width: 800px; margin: 0 auto;">
+                    <h3 style="color:var(--red); margin-bottom: 1rem;">❌ DIAGNÓSTICO DE FALHA ATIVADO</h3>
+                    <p style="color: #fff; margin-bottom: 1rem;">O sistema detectou um erro técnico ao carregar a galeria:</p>
+                    <pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #ffca28; background: #000; padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); overflow-x: auto; white-space: pre-wrap;">
+${models.error}
+                    </pre>
+                    <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.7;">💡 Dica: Isso pode ser falta de chaves no Railway ou erro de RLS no Supabase.</p>
+                </div>
+            `;
             return;
         }
 
