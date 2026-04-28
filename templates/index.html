@@ -132,6 +132,18 @@
 <script>
 let currentModelId=null,currentProjectId=null,activeFilter='all';
 
+// MOUSE TRACKING FOR CARDS
+document.addEventListener('mousemove', e => {
+    const cards = document.querySelectorAll('.card, .model-card');
+    cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mouse-x', `${x}%`);
+        card.style.setProperty('--mouse-y', `${y}%`);
+    });
+});
+
 // RECOVERY MEMORY: Auto-restore state
 window.addEventListener('DOMContentLoaded', () => {
     const activeProject = {{ active_project|tojson if active_project else 'null' }};
@@ -361,10 +373,22 @@ c.classList.add('active');activeFilter=c.dataset.filter;loadGallery();
 });
 });
 function selectModel(id,name){
-currentModelId=id;
-document.getElementById('selectedModel').innerHTML=`<strong>${name}</strong> — selecionado`;
-document.getElementById('adaptBtn').disabled=!(currentModelId&&currentProjectId);
-goStage('adapt');
+    currentModelId=id;
+    const selectedDisplay = document.getElementById('selectedModel');
+    selectedDisplay.style.animation = 'none';
+    selectedDisplay.offsetHeight; // trigger reflow
+    selectedDisplay.style.animation = 'slideUpFade 0.5s ease';
+    selectedDisplay.innerHTML=`<div style="display:flex;align-items:center;gap:1rem">
+        <span style="font-size:1.5rem">🎯</span>
+        <div>
+            <div style="font-size:0.7rem;text-transform:uppercase;opacity:0.5">Modelo Ativo</div>
+            <div style="font-weight:700;color:var(--accent)">${name}</div>
+        </div>
+    </div>`;
+    document.getElementById('adaptBtn').disabled=!(currentModelId&&currentProjectId);
+    
+    // Pequeno delay para o usuário ver a seleção antes de trocar de aba
+    setTimeout(() => goStage('adapt'), 400);
 }
 function deleteModel(id){if(confirm('Excluir este modelo?'))fetch('/api/models/'+id,{method:'DELETE'}).then(()=>loadGallery())}
 </script>

@@ -1,15 +1,16 @@
 :root {
-    --bg: #050505;
-    --sidebar-bg: rgba(10, 10, 15, 0.8);
-    --card-bg: rgba(20, 20, 25, 0.6);
+    --bg: #030303;
+    --sidebar-bg: rgba(8, 8, 12, 0.9);
+    --card-bg: rgba(15, 15, 20, 0.7);
     --accent: #6366f1;
-    --accent-glow: rgba(99, 102, 241, 0.3);
+    --accent-glow: rgba(99, 102, 241, 0.4);
     --text: #ffffff;
-    --text2: #a1a1aa;
-    --text3: #71717a;
-    --border: rgba(255, 255, 255, 0.1);
-    --glass: blur(12px) saturate(180%);
-    --red: #ef4444;
+    --text2: #cbd5e1;
+    --text3: #94a3b8;
+    --border: rgba(255, 255, 255, 0.08);
+    --glass: blur(16px) saturate(180%);
+    --red: #f43f5e;
+    --panel-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
@@ -102,25 +103,26 @@ body::before {
 .main-content {
     flex-grow: 1;
     position: relative;
-    padding: 4rem;
+    padding: 3rem;
     overflow-y: auto;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center; /* Centraliza verticalmente se o conteúdo for pequeno */
 }
 
 .stage-panel {
     display: none;
     width: 100%;
-    max-width: 900px;
-    animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    max-width: 1000px; /* Um pouco mais largo para a galeria */
+    margin: auto;
+    animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .stage-panel.active { display: block; }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(40px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .stage-header { margin-bottom: 2.5rem; text-align: center; }
@@ -132,14 +134,28 @@ body::before {
     background: var(--card-bg);
     backdrop-filter: var(--glass);
     border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 2rem;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    border-radius: 32px;
+    padding: 2.5rem;
+    box-shadow: var(--panel-shadow);
     margin-bottom: 2rem;
-    transition: transform 0.3s ease;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-.card:hover { border-color: rgba(255,255,255,0.2); }
+.card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.card:hover { 
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8);
+}
 
 .card-title {
     font-size: 0.9rem;
@@ -224,20 +240,22 @@ body::before {
 }
 
 .model-card {
-    background: rgba(255,255,255,0.03);
+    background: rgba(255,255,255,0.02);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.4s;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
+    transform-style: preserve-3d;
+    perspective: 1000px;
 }
 
 .model-card:hover {
-    transform: translateY(-10px) scale(1.02);
+    transform: translateY(-12px) rotateX(4deg) rotateY(-4deg);
     border-color: var(--accent);
-    background: rgba(255,255,255,0.06);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background: rgba(255,255,255,0.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px var(--accent-glow);
 }
 
 .model-preview {
