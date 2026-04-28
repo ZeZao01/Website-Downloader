@@ -301,9 +301,17 @@ function loadGallery(){
         const grid=document.getElementById('galleryGrid');
         const empty=document.getElementById('galleryEmpty');
         
+        if(models.error) {
+            grid.innerHTML='';
+            empty.style.display='block';
+            empty.innerHTML = `<h3 style="color:var(--red);margin-bottom:1rem">${models.error}</h3>`;
+            return;
+        }
+
         if(!models || !models.length){
             grid.innerHTML='';
             empty.style.display='block';
+            empty.innerHTML = `<p>Nenhum modelo catalogado<br><span style="font-size:0.8rem;opacity:0.5">Capture um site na Etapa 1 para começar</span></p>`;
             return;
         }
         
