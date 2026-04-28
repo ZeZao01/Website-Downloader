@@ -10,11 +10,21 @@ class SupabaseDB:
     def __init__(self):
         url = os.getenv("SUPABASE_URL")
         key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY")
+        
+        # DEBUG LOGS FOR DEPLOYMENT
+        if not url: print("❌ Error: SUPABASE_URL not found in environment")
+        if not key: print("❌ Error: SUPABASE_SERVICE_ROLE_KEY/SUPABASE_KEY not found in environment")
+        
         if not url or not key:
             self.client = None
             print("⚠️ Supabase credentials missing")
         else:
-            self.client: Client = create_client(url, key)
+            try:
+                self.client: Client = create_client(url, key)
+                print("✅ Supabase client initialized")
+            except Exception as e:
+                self.client = None
+                print(f"❌ Failed to initialize Supabase: {e}")
 
     def get_models(self):
         if not self.client: return []
