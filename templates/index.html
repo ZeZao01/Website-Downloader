@@ -296,22 +296,55 @@ document.getElementById('adaptDownload').href=d.download_url;
 
 // GALLERY
 function loadGallery(){
-fetch('/api/models').then(r=>r.json()).then(models=>{
-const grid=document.getElementById('galleryGrid');
-const empty=document.getElementById('galleryEmpty');
-if(!models.length){grid.innerHTML='';empty.style.display='block';return}
-empty.style.display='none';
-const filtered=activeFilter==='all'?models:models.filter(m=>m.niche.includes(activeFilter)||m.style.includes(activeFilter));
-grid.innerHTML=filtered.map(m=>`<div class="model-card">
-<div class="model-preview"><div class="placeholder">🌐</div></div>
-<div class="model-info"><div class="model-name">${m.name}</div>
-<div class="model-meta"><span class="tag tag-niche">${m.niche}</span><span class="tag tag-style">${m.style}</span></div>
-<div class="model-actions">
-<button class="btn btn-sm btn-primary" onclick="selectModel('${m.id}','${m.name.replace(/'/g,"\\'")}')">Usar</button>
-<a class="btn btn-sm btn-secondary" href="/api/models/${m.id}/download">⬇</a>
-<button class="btn btn-sm btn-secondary" style="color:var(--red)" onclick="deleteModel('${m.id}')">✕</button>
-</div></div></div>`).join('');
-});
+    console.log("📂 Carregando galeria...");
+    fetch('/api/models').then(r=>r.json()).then(models=>{
+        const grid=document.getElementById('galleryGrid');
+        const empty=document.getElementById('galleryEmpty');
+        
+        if(!models || !models.length){
+            grid.innerHTML='';
+            empty.style.display='block';
+            return;
+        }
+        
+        empty.style.display='none';
+        
+        // Se o filtro for 'all', mostra tudo. Senão, filtra.
+        const filtered = activeFilter === 'all' 
+            ? models 
+            : models.filter(m => {
+                const niche = (m.niche || '').toLowerCase();
+                const style = (m.style || '').toLowerCase();
+                const f = activeFilter.toLowerCase();
+                return niche.includes(f) || style.includes(f);
+            });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '';
+            empty.style.display = 'block';
+            empty.innerHTML = `<p>Nenhum modelo encontrado para o filtro "${activeFilter}"</p>`;
+            return;
+        }
+
+        grid.innerHTML=filtered.map(m=>`
+            <div class="model-card" style="animation: fadeIn 0.5s ease forwards;">
+                <div class="model-preview">
+                    <div class="placeholder">🌐</div>
+                    ${m.has_design_system ? '<div class="status-badge success" style="position:absolute;top:10px;right:10px;font-size:0.6rem">🧬 DS OK</div>' : ''}
+                </div>
+                <div class="model-info">
+                    <div class="model-name">${m.name}</div>
+                    <div class="model-meta">
+                        <span class="tag tag-niche">${m.niche}</span>
+                        <span class="tag tag-style">${m.style}</span>
+                    </div>
+                    <div class="model-actions" style="margin-top:1rem;display:flex;gap:0.5rem">
+                        <button class="btn btn-sm btn-primary" style="padding:0.4rem 1rem;font-size:0.7rem" onclick="selectModel('${m.id}','${m.name.replace(/'/g,"\\'")}')">Usar</button>
+                        <a class="btn btn-sm btn-secondary" style="padding:0.4rem 0.8rem" href="/api/models/${m.id}/download">⬇</a>
+                    </div>
+                </div>
+            </div>`).join('');
+    });
 }
 document.querySelectorAll('.filter-chip').forEach(c=>{
 c.addEventListener('click',()=>{
