@@ -294,9 +294,16 @@ def _process_capture(sid, url):
             q.put("☁️ Sincronizando com Supabase...")
             storage_path = db.upload_file("model-zips", f"{model_id}.zip", zip_path)
 
+        # Clean and prioritize naming
+        site_title = metadata.get('title', '').strip()
+        if not site_title or site_title.lower() in ('home', 'index', 'welcome'):
+            display_name = site_name
+        else:
+            display_name = site_title
+
         model_entry = {
             'id': model_id,
-            'name': metadata.get('title', site_name),
+            'name': display_name,
             'url': url,
             'content_hash': current_hash,
             'niche': metadata.get('niche', 'general'),
@@ -616,6 +623,65 @@ def download_output(output_id):
     return send_file(zip_path, as_attachment=True, download_name=f"adaptation-{output_id[:8]}.zip")
 
 
+@app.route('/api/preview-output/<output_id>/')
+@app.route('/api/preview-output/<output_id>/<path:filename>')
+@require_auth
+def preview_output(output_id, filename=None):
+    """Serve the adapted project for preview with smart entry-point detection."""
+    target_dir = os.path.join(OUTPUT_FOLDER, output_id)
+    zip_path = os.path.join(OUTPUT_FOLDER, f"{output_id}.zip")
+    
+    if not os.path.exists(target_dir):
+        if os.path.exists(zip_path):
+            try:
+                os.makedirs(target_dir, exist_ok=True)
+                with zipfile.ZipFile(zip_path, 'r') as z:
+                    z.extractall(target_dir)
+            except Exception as e:
+                return f"Error extracting preview: {str(e)}", 500
+        else:
+            return "Preview ZIP not found on server", 404
+            
+    project_subpath = os.path.join(target_dir, 'project')
+    serve_from = project_subpath if os.path.exists(project_subpath) else target_dir
+    
+    # Smart index.html detection if no filename or just root
+    if not filename or filename in ('index.html', ''):
+        # Look for index.html recursively if not at root
+        if not os.path.exists(os.path.join(serve_from, 'index.html')):
+            for root, _, files in os.walk(serve_from):
+                if 'index.html' in files:
+                    serve_from = root
+                    filename = 'index.html'
+                    break
+        else:
+            filename = 'index.html'
+
+    try:
+        return send_from_directory(serve_from, filename)
+    except Exception:
+        return f"File {filename} not found in {serve_from}", 404
+
+
+@app.route('/api/debug/verify-flow')
+@require_auth
+def verify_flow():
+    """Internal logic validation diagnostic."""
+    results = {
+        'folders': {
+            'upload': os.path.exists(UPLOAD_FOLDER),
+            'output': os.path.exists(OUTPUT_FOLDER),
+            'models': os.path.exists(os.path.join('static', 'models'))
+        },
+        'database': 'connected' if db else 'failed',
+        'env': {
+            'supabase': bool(os.getenv('SUPABASE_URL')),
+            'openrouter': bool(os.getenv('OPENROUTER_API_KEY'))
+        }
+    }
+    return jsonify({'success': True, 'diagnostics': results})
+
+
 # ═══════════════════════════════════════════
 # MODELS CATALOG API
 # ═══════════════════════════════════════════
@@ -630,7 +696,18 @@ def list_models():
         models = db.get_models()
         if models is None:
             return jsonify({'error': '❌ O Supabase não retornou dados. Verifique o RLS ou se a tabela "models" existe.'})
-        return jsonify(models)
+            
+        # Filtra apenas modelos que possuem arquivo ZIP (Supabase Storage ou local)
+        # Isso garante que a galeria só mostre o que é "adaptável"
+        filtered_models = []
+        for m in models:
+            has_remote = bool(m.get('zip_storage_path') and m.get('zip_storage_path').startswith('http'))
+            has_local = bool(m.get('zip_path') and os.path.exists(m['zip_path']))
+            
+            if has_remote or has_local:
+                filtered_models.append(m)
+        
+        return jsonify(filtered_models)
     except Exception as e:
         import traceback
         return jsonify({'error': f'DEBUG: {str(e)}\n{traceback.format_exc()}'}), 500

@@ -37,7 +37,7 @@ class SupabaseDB:
     def get_models(self):
         if not self.client: return []
         try:
-            res = self.client.table("models").select("*").order("created_at", desc=True).execute()
+            res = self.client.table("models").select("*").order("last_captured_at", desc=True).execute()
             return res.data
         except Exception as e:
             print(f"Error fetching models: {e}")

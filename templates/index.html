@@ -40,6 +40,7 @@
 <button class="nav-item" data-stage="upload"><span class="num">03</span><span>Projeto Real</span></button>
 <button class="nav-item" data-stage="adapt"><span class="num">04</span><span>Adaptação</span></button>
 <button class="nav-item" data-stage="gallery" style="margin-top:auto;border-top:1px solid var(--border);padding-top:1rem"><span class="num">📂</span><span>Galeria</span></button>
+<button class="nav-item" onclick="runDiagnostics()" style="font-size:0.6rem;opacity:0.3;border:none;background:none;text-align:left;padding:0.5rem 1.5rem">⚙️ Diagnostics</button>
 </nav>
 </aside>
 
@@ -105,9 +106,14 @@
 <div class="card-title">📂 Projeto Real</div>
 <div id="selectedProject" style="padding:1rem;background:var(--bg);border-radius:10px;color:var(--text3);margin-bottom:1rem">Nenhum projeto carregado. Vá à Etapa 3.</div>
 <button id="adaptBtn" class="btn btn-primary" onclick="runAdaptation()" disabled>🚀 Gerar Adaptação</button>
-<div id="adaptResult" style="display:none;margin-top:1rem">
-<span class="status-badge success">✅ Adaptação concluída</span>
-<a id="adaptDownload" class="btn btn-secondary btn-sm" style="margin-left:.5rem" href="#" download>⬇ Download Pacote</a>
+<div id="adaptResult" style="display:none;margin-top:1.5rem; padding: 1.5rem; background: rgba(0,255,0,0.05); border: 1px solid rgba(0,255,0,0.2); border-radius: 15px; animation: slideUp 0.5s ease;">
+    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom: 1rem;">
+        <span class="status-badge success">✅ Adaptação concluída</span>
+    </div>
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <button id="previewBtn" class="btn btn-secondary" style="background: var(--accent); color: #000; font-weight:700;">👁 Abrir Preview</button>
+        <a id="adaptDownload" class="btn btn-secondary" style="border: 1px solid var(--accent); color: var(--accent);" href="#" download>⬇ Baixar Pacote (.zip)</a>
+    </div>
 </div>
 </div>
 </div>
@@ -115,17 +121,23 @@
 <!-- GALLERY -->
 <div id="stageGallery" class="stage-panel">
 <div class="stage-header"><h2>📂 Galeria de Modelos</h2><p>Todos os modelos capturados e catalogados</p></div>
-<div class="gallery-filters" id="galleryFilters">
-<button class="filter-chip active" data-filter="all">Todos</button>
-<button class="filter-chip" data-filter="saas-ai">SaaS/AI</button>
-<button class="filter-chip" data-filter="dashboard">Dashboard</button>
-<button class="filter-chip" data-filter="landing">Landing</button>
-<button class="filter-chip" data-filter="portfolio">Portfolio</button>
-<button class="filter-chip" data-filter="ecommerce">E-commerce</button>
-<button class="filter-chip" data-filter="medical">Medical</button>
-<button class="filter-chip" data-filter="glass">Glass</button>
-<button class="filter-chip" data-filter="dark">Dark</button>
-<button class="filter-chip" data-filter="animation">Animation</button>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; flex-wrap:wrap; gap:1rem;">
+    <div class="gallery-filters" id="galleryFilters" style="margin-bottom:0">
+        <button class="filter-chip active" data-filter="all">Todos</button>
+        <button class="filter-chip" data-filter="saas-ai">SaaS/AI</button>
+        <button class="filter-chip" data-filter="dashboard">Dashboard</button>
+        <button class="filter-chip" data-filter="landing">Landing</button>
+        <button class="filter-chip" data-filter="glass">Glass</button>
+        <button class="filter-chip" data-filter="dark">Dark</button>
+    </div>
+    <div style="display:flex; align-items:center; gap:0.5rem; background: var(--card-bg); padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid var(--border);">
+        <span style="font-size:0.7rem; color:var(--text3); text-transform:uppercase;">Ordenar:</span>
+        <select id="gallerySort" onchange="loadGallery()" style="background:transparent; border:none; color:var(--accent); font-size:0.8rem; font-weight:600; outline:none; cursor:pointer;">
+            <option value="newest">Mais Recentes</option>
+            <option value="name">Nome (A-Z)</option>
+            <option value="oldest">Antigos</option>
+        </select>
+    </div>
 </div>
 <div id="galleryGrid" class="models-grid"></div>
 <div id="galleryEmpty" style="text-align:center;padding:3rem;color:var(--text3)">
@@ -239,9 +251,10 @@ class Bolt {
     }
 }
 
-for(let i=0; i<2; i++) bolts.push(new Bolt()); // Only 2 bolts at a time for performance
+for(let i=0; i<1; i++) bolts.push(new Bolt()); // Minimum bolts for zero lag
 
 function animateBg() {
+    if (document.hidden) { requestAnimationFrame(animateBg); return; }
     ctx.fillStyle = `rgba(3, 3, 3, 0.4)`; // Faster fade, less processing
     ctx.fillRect(0,0,canvas.width, canvas.height);
     
@@ -417,9 +430,15 @@ function addLine(t,msg){const d=document.createElement('div');d.className='line'
 // STAGE 2: EXTRACT
 function loadModels(){
 fetch('/api/models').then(r=>r.json()).then(models=>{
+if(models.error) return;
 const c=document.getElementById('extractModelsList');
-c.innerHTML=models.map(m=>`<div class="model-card" onclick="extractDS('${m.id}')">
-<div class="model-preview"><div class="placeholder">🌐</div></div>
+// Sort by newest first
+models.sort((a,b) => new Date(b.created_at || b.last_captured_at) - new Date(a.created_at || a.last_captured_at));
+c.innerHTML=models.map(m=>`<div class="model-card ${m.id === currentModelId ? 'active' : ''}" onclick="extractDS('${m.id}')" style="${m.id === currentModelId ? 'border: 2px solid var(--accent);' : ''}">
+<div class="model-preview" style="background: ${m.screenshot_url ? 'none' : 'linear-gradient(45deg, #111, #222)'}">
+    ${m.screenshot_url ? `<img src="${m.screenshot_url}" style="width:100%;height:100%;object-fit:cover;">` : '<div class="placeholder">⚡</div>'}
+    ${m.id === currentModelId ? '<div class="status-badge processing" style="position:absolute;top:5px;left:5px;font-size:0.5rem">RECÉM CAPTURADO</div>' : ''}
+</div>
 <div class="model-info"><div class="model-name">${m.name}</div>
 <div class="model-meta"><span class="tag tag-niche">${m.niche}</span><span class="tag tag-style">${m.style}</span></div>
 ${m.has_design_system?'<span class="status-badge success" style="margin-top:.5rem">✅ DS Extraído</span>':''}
@@ -489,14 +508,26 @@ function runAdaptation(){
     .then(r=>r.json()).then(d=>{
         btn.disabled=false;btn.textContent='🚀 Gerar Adaptação';
         if(d.success){
-            document.getElementById('adaptResult').style.display='block';
-            document.getElementById('adaptDownload').href=d.download_url;
+            const res = document.getElementById('adaptResult');
+            res.style.display='block';
+            document.getElementById('adaptDownload').href = d.download_url;
+            
+            // Set up preview button
+            const previewBtn = document.getElementById('previewBtn');
+            previewBtn.onclick = () => {
+                window.open(`/api/preview-output/${d.output_id}/`, '_blank');
+            };
+            
+            // Scroll to result
+            res.scrollIntoView({ behavior: 'smooth' });
         } else {
-            document.getElementById('adaptResult').style.display='block';
-            document.getElementById('adaptResult').innerHTML = `
-                <span class="status-badge" style="background:var(--red)">❌ Erro</span>
-                <pre style="margin-top:0.5rem;font-size:0.7rem;color:#ffca28;background:#111;padding:1rem;border-radius:8px;white-space:pre-wrap">${d.error}</pre>
-            `;
+            // Visualize error in the UI
+            const res = document.getElementById('adaptResult');
+            res.style.display='block';
+            res.style.background = 'rgba(255,0,0,0.1)';
+            res.style.borderColor = 'var(--red)';
+            res.innerHTML = `<div style="color:var(--red); font-weight:700; margin-bottom:0.5rem">❌ Erro na Adaptação</div>
+                             <pre style="font-size:0.7rem; color:#fff; background:#000; padding:1rem; border-radius:10px; overflow:auto;">${d.error}</pre>`;
         }
     }).catch(err=>{
         btn.disabled=false;btn.textContent='🚀 Gerar Adaptação';
@@ -506,7 +537,9 @@ function runAdaptation(){
 
 // GALLERY
 function loadGallery(){
-    console.log("📂 Carregando galeria...");
+    const sortVal = document.getElementById('gallerySort')?.value || 'newest';
+    console.log(`📂 Carregando galeria (Sort: ${sortVal}, Filter: ${activeFilter})...`);
+    
     fetch('/api/models').then(r=>r.json()).then(models=>{
         const grid=document.getElementById('galleryGrid');
         const empty=document.getElementById('galleryEmpty');
@@ -517,11 +550,8 @@ function loadGallery(){
             empty.innerHTML = `
                 <div style="background: rgba(255,0,0,0.1); border: 2px solid var(--red); padding: 2rem; border-radius: 20px; text-align: left; max-width: 800px; margin: 0 auto;">
                     <h3 style="color:var(--red); margin-bottom: 1rem;">❌ DIAGNÓSTICO DE FALHA ATIVADO</h3>
-                    <p style="color: #fff; margin-bottom: 1rem;">O sistema detectou um erro técnico ao carregar a galeria:</p>
-                    <pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #ffca28; background: #000; padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); overflow-x: auto; white-space: pre-wrap;">
-${models.error}
-                    </pre>
-                    <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.7;">💡 Dica: Isso pode ser falta de chaves no Railway ou erro de RLS no Supabase.</p>
+                    <p style="color: #fff; margin-bottom: 1rem;">Erro Supabase:</p>
+                    <pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #ffca28; background: #000; padding: 1rem; border-radius: 10px; overflow-x: auto; white-space: pre-wrap;">${models.error}</pre>
                 </div>
             `;
             return;
@@ -530,14 +560,14 @@ ${models.error}
         if(!models || !models.length){
             grid.innerHTML='';
             empty.style.display='block';
-            empty.innerHTML = `<p>Nenhum modelo catalogado<br><span style="font-size:0.8rem;opacity:0.5">Capture um site na Etapa 1 para começar</span></p>`;
+            empty.innerHTML = `<p>Nenhum modelo disponível com ZIP local/remoto</p>`;
             return;
         }
         
         empty.style.display='none';
         
-        // Se o filtro for 'all', mostra tudo. Senão, filtra.
-        const filtered = activeFilter === 'all' 
+        // Filter
+        let filtered = activeFilter === 'all' 
             ? models 
             : models.filter(m => {
                 const niche = (m.niche || '').toLowerCase();
@@ -546,15 +576,24 @@ ${models.error}
                 return niche.includes(f) || style.includes(f);
             });
 
+        // Sort
+        if (sortVal === 'newest') {
+            filtered.sort((a,b) => new Date(b.created_at || b.last_captured_at) - new Date(a.created_at || a.last_captured_at));
+        } else if (sortVal === 'oldest') {
+            filtered.sort((a,b) => new Date(a.created_at || a.last_captured_at) - new Date(b.created_at || b.last_captured_at));
+        } else if (sortVal === 'name') {
+            filtered.sort((a,b) => (a.name||'').localeCompare(b.name||''));
+        }
+
         if (filtered.length === 0) {
             grid.innerHTML = '';
             empty.style.display = 'block';
-            empty.innerHTML = `<p>Nenhum modelo encontrado para o filtro "${activeFilter}"</p>`;
+            empty.innerHTML = `<p>Nenhum modelo para "${activeFilter}"</p>`;
             return;
         }
 
         grid.innerHTML=filtered.map(m=>`
-            <div class="model-card" style="animation: fadeIn 0.5s ease forwards;">
+            <div class="model-card ${m.id === currentModelId ? 'highlight' : ''}" style="animation: fadeIn 0.4s ease forwards; ${m.id === currentModelId ? 'border: 2px solid var(--accent);' : ''}">
                 <div class="model-preview" style="background: ${m.screenshot_url ? 'none' : 'linear-gradient(45deg, #111, #222)'}">
                     ${m.screenshot_url 
                         ? `<img src="${m.screenshot_url}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;" 
@@ -562,20 +601,20 @@ ${models.error}
                         : ''
                     }
                     <div class="placeholder" style="${m.screenshot_url ? 'display:none;' : ''}display:flex;flex-direction:column;align-items:center;gap:0.5rem">
-                        <span style="font-size:2rem">⚡</span>
-                        <span style="font-size:0.6rem;opacity:0.5;text-transform:uppercase;letter-spacing:1px">Preview Indisponível</span>
+                        <span style="font-size:1.5rem">⚡</span>
+                        <span style="font-size:0.5rem;opacity:0.5;text-transform:uppercase;">Preview Indisponível</span>
                     </div>
-                    ${m.has_design_system ? '<div class="status-badge success" style="position:absolute;top:10px;right:10px;font-size:0.6rem;z-index:2">🧬 DS OK</div>' : ''}
+                    ${m.id === currentModelId ? '<div class="status-badge processing" style="position:absolute;top:5px;left:5px;font-size:0.5rem;z-index:2">ÚLTIMO CAPTURADO</div>' : ''}
+                    ${m.has_design_system ? '<div class="status-badge success" style="position:absolute;top:5px;right:5px;font-size:0.5rem;z-index:2">🧬 DS OK</div>' : ''}
                 </div>
                 <div class="model-info">
-                    <div class="model-name">${m.name}</div>
+                    <div class="model-name" style="font-size:0.8rem; height: 2.4em; overflow: hidden;">${m.name}</div>
                     <div class="model-meta">
                         <span class="tag tag-niche">${m.niche}</span>
-                        <span class="tag tag-style">${m.style}</span>
                     </div>
-                    <div class="model-actions" style="margin-top:1rem;display:flex;gap:0.5rem">
-                        <button class="btn btn-sm btn-primary" style="padding:0.4rem 1rem;font-size:0.7rem" onclick="selectModel('${m.id}','${m.name.replace(/'/g,"\\'")}')">Usar</button>
-                        <a class="btn btn-sm btn-secondary" style="padding:0.4rem 0.8rem" href="/api/models/${m.id}/download">⬇</a>
+                    <div class="model-actions" style="margin-top:0.8rem;display:flex;gap:0.4rem">
+                        <button class="btn btn-sm btn-primary" style="flex:1; padding:0.4rem;font-size:0.7rem" onclick="selectModel('${m.id}','${m.name.replace(/'/g,"\\'")}')">Usar</button>
+                        <a class="btn btn-sm btn-secondary" style="padding:0.4rem 0.6rem" href="/api/models/${m.id}/download" title="Baixar ZIP">⬇</a>
                     </div>
                 </div>
             </div>`).join('');
@@ -607,6 +646,43 @@ function selectModel(id,name){
     setTimeout(() => goStage('adapt'), 300);
 }
 function deleteModel(id){if(confirm('Excluir este modelo?'))fetch('/api/models/'+id,{method:'DELETE'}).then(()=>loadGallery())}
+
+// DIAGNOSTICS & INTERNAL LOGIC VALIDATION
+function runDiagnostics() {
+    console.log("🛠 Iniciando diagnóstico interno...");
+    
+    // 1. Menu Validation Logic
+    const navItems = document.querySelectorAll('.nav-item[data-stage]');
+    const map = {capture:'stageCapture',extract:'stageExtract',upload:'stageUpload',adapt:'stageAdapt',gallery:'stageGallery'};
+    let broken = 0;
+    
+    navItems.forEach(item => {
+        const stageId = map[item.dataset.stage];
+        const panel = document.getElementById(stageId);
+        if (!panel) {
+            console.error(`❌ Erro lógico: Menu "${item.dataset.stage}" aponta para painel inexistente "${stageId}"`);
+            broken++;
+        }
+    });
+    
+    // 2. Flow Validation (API)
+    fetch('/api/debug/verify-flow')
+        .then(r => r.json())
+        .then(d => {
+            if (d.success) {
+                const results = d.diagnostics;
+                let report = `DIAGNÓSTICO GRAVIT:\n`;
+                report += `Menus: ${broken === 0 ? '✅ OK' : '❌ ' + broken + ' quebrados'}\n`;
+                report += `DB: ${results.database === 'connected' ? '✅' : '❌'}\n`;
+                report += `Upload Dir: ${results.folders.upload ? '✅' : '❌'}\n`;
+                report += `Output Dir: ${results.folders.output ? '✅' : '❌'}\n`;
+                report += `Supabase Config: ${results.env.supabase ? '✅' : '❌'}\n`;
+                report += `OpenRouter Config: ${results.env.openrouter ? '✅' : '❌'}`;
+                
+                alert(report);
+            }
+        });
+}
 </script>
 </body>
 </html>
