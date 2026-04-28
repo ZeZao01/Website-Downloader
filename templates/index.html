@@ -218,12 +218,26 @@ if(d.error){addLine(term,'❌ '+d.error);btn.disabled=false;btn.textContent='Cap
 const es=new EventSource('/stream/'+d.session_id);
 es.onmessage=e=>addLine(term,e.data);
 es.addEventListener('done',e=>{
-es.close();btn.disabled=false;btn.textContent='Capturar';
-const parts=e.data.split('|');
-if(parts[0]==='complete'){
-document.getElementById('captureSuccess').style.display='block';
-try{const info=JSON.parse(parts[1]);currentModelId=info.model_id}catch(e){}
-}
+    es.close();btn.disabled=false;btn.textContent='Capturar';
+    const parts=e.data.split('|');
+    if(parts[0]==='complete'){
+        document.getElementById('captureSuccess').style.display='block';
+        try {
+            const info = JSON.parse(parts[1]);
+            currentModelId = info.model_id;
+            currentProjectId = info.project_id;
+            
+            // Sync session with server
+            if (currentProjectId) {
+                fetch('/api/sync_session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ project_id: currentProjectId })
+                });
+            }
+            document.getElementById('adaptBtn').disabled = false;
+        } catch(err) { console.error("Error parsing capture data", err); }
+    }
 });
 es.onerror=()=>{es.close();btn.disabled=false;btn.textContent='Capturar'};
 });

@@ -167,6 +167,17 @@ def index():
     return render_template('index.html', active_project=active_project)
 
 
+@app.route('/api/sync_session', methods=['POST'])
+@require_auth
+def sync_session():
+    data = request.get_json() or {}
+    project_id = data.get('project_id')
+    if project_id:
+        session['project_id'] = project_id
+        return jsonify({'success': True})
+    return jsonify({'success': False}), 400
+
+
 @app.route('/health')
 def health():
     info = {'status': 'ok'}
@@ -305,6 +316,7 @@ def _process_capture(sid, url):
             download_results[sid] = {
                 'status': 'complete', 'zip_path': zip_path,
                 'filename': zip_filename, 'model_id': model_id,
+                'project_id': project_id,
                 'created_at': time.time(),
             }
         
@@ -318,7 +330,10 @@ def _process_capture(sid, url):
             'original_structure': {'url': url, 'sid': sid},
             'created_at': time.strftime('%Y-%m-%dT%H:%M:%S')
         })
-        session['project_id'] = project_id
+        # session['project_id'] = project_id # REMOVIDO: Causa erro de contexto no background thread
+        
+        # Envia o project_id via mensagem para o frontend salvar
+        q.put(f"COMPLETE_DATA|{json.dumps({'model_id': model_id, 'project_id': project_id})}")
     except Exception as e:
         q.put(f"❌ Erro: {str(e)}")
         with session_lock:
@@ -355,7 +370,10 @@ def stream(session_id):
                 with session_lock:
                     result = download_results.get(session_id, {})
                 if result.get('status') in ('complete', 'error'):
-                    extra = json.dumps({'model_id': result.get('model_id', '')})
+                    extra = json.dumps({
+                        'model_id': result.get('model_id', ''),
+                        'project_id': result.get('project_id', '')
+                    })
                     yield f"event: done\ndata: {result['status']}|{extra}\n\n"
                     return
             except queue.Empty:
