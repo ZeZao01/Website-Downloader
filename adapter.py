@@ -150,21 +150,28 @@ class StructureAdapter:
         return '\n'.join(guide)
 
     def generate_ai_adaptation_plan(self, structure):
-        """Use OpenRouter to generate a detailed adaptation plan."""
-        api_key = os.getenv('OPENROUTER_API_KEY')
+        """Use OpenAI to generate a detailed adaptation plan."""
+        api_key = os.getenv('OPENAI_API_KEY')
         if not api_key:
+            self.log("⚠️ OPENAI_API_KEY não configurado. Pulando plano de IA.")
             return None
 
-        model = os.getenv('OPENROUTER_MODEL', 'anthropic/claude-sonnet-4')
+        self.log("🤖 Solicitando plano de adaptação inteligente à OpenAI...")
+        model = os.getenv('OPENAI_MODEL', 'gpt-4o-mini') 
         
+        # Limit the JSON size to avoid hitting token limits or timeouts
+        structure_str = json.dumps(structure, indent=2)
+        if len(structure_str) > 5000:
+            structure_str = structure_str[:5000] + "\n... (truncated)"
+
         prompt = f"""You are a senior frontend architect. 
 Adapt the following Design System to the structure of the Real Project.
 
 DESIGN SYSTEM:
-{json.dumps(self.ds, indent=2)[:4000]}
+{json.dumps(self.ds, indent=2)[:3000]}
 
 PROJECT STRUCTURE:
-{json.dumps(structure, indent=2)}
+{structure_str}
 
 TASK:
 1. Map the Design System components (buttons, cards, inputs) to the project files.
@@ -176,57 +183,215 @@ Return a detailed markdown report."""
         try:
             headers = {
                 "Authorization": f"Bearer {api_key}",
-                "HTTP-Referer": "https://gravit.design", # Optional
-                "X-Title": "Gravit Design Factory", # Optional
                 "Content-Type": "application/json"
             }
             payload = {
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}]
             }
-            res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload, timeout=30)
+            res = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload, timeout=25)
             if res.status_code == 200:
+                self.log("✅ Plano de IA gerado com sucesso.")
                 return res.json()['choices'][0]['message']['content']
+            else:
+                self.log(f"⚠️ Erro na API OpenAI: {res.status_code}")
         except Exception as e:
-            print(f"OpenRouter Adaptation Error: {e}")
+            self.log(f"❌ Falha na chamada de IA: {e}")
         return None
+
+    def _build_css_block(self):
+        """Return CSS variables as a string for embedding in prompts."""
+        return self.generate_css_variables()
+
+    def _build_colors_summary(self):
+        colors = self.ds.get('colors', [])
+        hex_c = [c for c in colors if c.startswith('#')][:10]
+        return ', '.join(hex_c) if hex_c else 'Não definido'
+
+    def _build_fonts_summary(self):
+        fonts = self.ds.get('fonts', [])[:3]
+        return ', '.join(fonts) if fonts else 'sans-serif'
+
+    def _build_components_summary(self):
+        comps = self.ds.get('components', {})
+        parts = []
+        for k, v in comps.items():
+            if v:
+                parts.append(f"{k}: {len(v)} variações")
+        return '; '.join(parts) if parts else 'Nenhum detectado'
+
+    def generate_platform_variations(self, structure, output_dir):
+        """Generate ready-to-paste prompt files for each vibe-code platform."""
+        self.log("🎯 Gerando variações para plataformas de vibe-code...")
+        var_dir = os.path.join(output_dir, '_variações')
+        os.makedirs(var_dir, exist_ok=True)
+
+        title = self.ds.get('title', 'Design System')
+        css_block = self._build_css_block()
+        colors = self._build_colors_summary()
+        fonts = self._build_fonts_summary()
+        comps = self._build_components_summary()
+        html_files = structure.get('html', [])
+        css_files = structure.get('css', [])
+
+        # --- LOVABLE / BASE44 / CORE0 ---
+        lovable = f"""# PROMPT DE IMPLEMENTAÇÃO — {title}
+# Plataforma: Lovable / Base44 / Core0
+# Cole este prompt inteiro no chat da plataforma.
+
+Implemente o design system abaixo no meu projeto. Siga EXATAMENTE as cores, fontes e variáveis CSS.
+
+## Design System Variables (CSS)
+Crie um arquivo `design-system-variables.css` com este conteúdo e importe-o no arquivo principal:
+
+```css
+{css_block}
+```
+
+## Paleta de Cores
+Cores principais: {colors}
+
+## Tipografia
+Fontes: {fonts}
+
+## Componentes Detectados
+{comps}
+
+## Instruções de Implementação
+1. Importe o CSS acima no `index.css` ou equivalente usando `@import './design-system-variables.css';`
+2. Substitua todas as cores hardcoded pelas variáveis `var(--ds-color-N)`
+3. Substitua fontes por `var(--ds-font-N)`
+4. Mantenha a responsividade existente
+5. NÃO remova funcionalidades — apenas aplique o visual do design system
+
+## Arquivos do Projeto para Adaptar
+{chr(10).join('- ' + f for f in html_files[:20])}
+{chr(10).join('- ' + f for f in css_files[:20])}
+"""
+        with open(os.path.join(var_dir, 'prompt-lovable.md'), 'w', encoding='utf-8') as f:
+            f.write(lovable)
+
+        # --- CLAUDE CODE / ANTIGRAVITY ---
+        claude = f"""# PROMPT DE IMPLEMENTAÇÃO — {title}
+# Plataforma: Claude Code / Antigravity / Cursor
+# Cole este prompt inteiro no terminal do agente.
+
+Aplique o design system extraído abaixo no projeto atual. Siga as instruções passo a passo.
+
+## Passo 1: Criar arquivo de variáveis
+Crie o arquivo `src/design-system-variables.css` (ou na raiz se não houver `src/`):
+
+```css
+{css_block}
+```
+
+## Passo 2: Importar no projeto
+Adicione `@import './design-system-variables.css';` no topo do arquivo CSS principal do projeto.
+
+## Passo 3: Aplicar variáveis
+Nos seguintes arquivos, substitua:
+- Cores hexadecimais → `var(--ds-color-N)` correspondente
+- Font-family → `var(--ds-font-N)` correspondente
+
+Arquivos alvo:
+{chr(10).join('- `' + f + '`' for f in css_files[:15])}
+{chr(10).join('- `' + f + '`' for f in html_files[:15])}
+
+## Passo 4: Componentes
+{comps}
+
+## Regras
+- Não quebre funcionalidades existentes
+- Mantenha a estrutura de pastas
+- Aplique as variáveis de forma consistente em TODOS os arquivos
+- Faça commit após cada arquivo modificado
+"""
+        with open(os.path.join(var_dir, 'prompt-claude-code.md'), 'w', encoding='utf-8') as f:
+            f.write(claude)
+
+        # --- GOOGLE AI STUDIO ---
+        studio = f"""# PROMPT DE IMPLEMENTAÇÃO — {title}
+# Plataforma: Google AI Studio / Gemini
+# Cole este prompt no chat do AI Studio com o código do projeto anexado.
+
+Analise o projeto anexado e aplique o seguinte design system em todos os arquivos de estilo e componentes.
+
+## CSS Variables para Aplicar
+```css
+{css_block}
+```
+
+## Cores: {colors}
+## Fontes: {fonts}
+## Componentes: {comps}
+
+Retorne APENAS os arquivos modificados com o código completo atualizado, prontos para substituir os originais.
+Não inclua explicações — apenas código.
+"""
+        with open(os.path.join(var_dir, 'prompt-google-studio.md'), 'w', encoding='utf-8') as f:
+            f.write(studio)
+
+        # --- JSON Universal (para qualquer integração programática) ---
+        universal = {
+            'platform': 'universal',
+            'design_system': title,
+            'css_variables': css_block,
+            'colors': self.ds.get('colors', [])[:15],
+            'fonts': self.ds.get('fonts', [])[:5],
+            'components': {k: len(v) for k, v in self.ds.get('components', {}).items()},
+            'target_files': {
+                'html': html_files[:30],
+                'css': css_files[:30],
+            }
+        }
+        with open(os.path.join(var_dir, 'integration-data.json'), 'w', encoding='utf-8') as f:
+            json.dump(universal, f, indent=2, ensure_ascii=False)
+
+        self.log("✅ 4 variações geradas: Lovable, Claude Code, Google Studio, Universal JSON")
+        return ['prompt-lovable.md', 'prompt-claude-code.md', 'prompt-google-studio.md', 'integration-data.json']
 
     def create_adaptation_package(self, output_dir):
         """Create the full adaptation package."""
         self.log("📦 Criando pacote de adaptação...")
         os.makedirs(output_dir, exist_ok=True)
 
+        true_root = self.project_dir
+        if os.path.exists(self.project_dir):
+            items = [i for i in os.listdir(self.project_dir) if i != '__MACOSX']
+            if len(items) == 1 and os.path.isdir(os.path.join(self.project_dir, items[0])):
+                true_root = os.path.join(self.project_dir, items[0])
+
+        if os.path.exists(true_root):
+            self.log("📂 Copiando arquivos do projeto (ignorando node_modules/.git)...")
+            shutil.copytree(
+                true_root, output_dir, dirs_exist_ok=True,
+                ignore=shutil.ignore_patterns(
+                    'node_modules', '.git', '__pycache__', '.next',
+                    'venv', '.venv', 'dist', 'build', '.DS_Store'
+                )
+            )
+
         structure = self.analyze_project()
 
-        # 1. CSS Variables
         css_vars = self.generate_css_variables()
-        css_path = os.path.join(output_dir, 'design-system-variables.css')
-        with open(css_path, 'w', encoding='utf-8') as f:
+        with open(os.path.join(output_dir, 'design-system-variables.css'), 'w', encoding='utf-8') as f:
             f.write(css_vars)
 
-        # 2. Adaptation Guide
         guide = self.generate_adaptation_guide(structure)
         ai_plan = self.generate_ai_adaptation_plan(structure)
-        
-        guide_path = os.path.join(output_dir, 'adaptation-guide.md')
-        with open(guide_path, 'w', encoding='utf-8') as f:
+        with open(os.path.join(output_dir, 'adaptation-guide.md'), 'w', encoding='utf-8') as f:
             f.write(guide)
             if ai_plan:
-                f.write("\n\n---\n\n")
-                f.write("# Plano de Adaptação Inteligente (AI)\n\n")
+                f.write("\n\n---\n\n# Plano de Adaptação Inteligente (AI)\n\n")
                 f.write(ai_plan)
 
-        # 3. Design System Data (JSON)
-        data_path = os.path.join(output_dir, 'design-system-data.json')
-        with open(data_path, 'w', encoding='utf-8') as f:
+        with open(os.path.join(output_dir, 'design-system-data.json'), 'w', encoding='utf-8') as f:
             json.dump(self.ds, f, indent=2, ensure_ascii=False)
 
-        # 4. Copy project files
-        project_out = os.path.join(output_dir, 'project')
-        if os.path.exists(self.project_dir):
-            shutil.copytree(self.project_dir, project_out, dirs_exist_ok=True)
+        # Generate platform-specific variations
+        variations = self.generate_platform_variations(structure, output_dir)
 
-        self.log(f"✅ Pacote gerado em {output_dir}")
+        self.log(f"✅ Pacote gerado com sucesso ({len(variations)} variações).")
         return output_dir
 
 

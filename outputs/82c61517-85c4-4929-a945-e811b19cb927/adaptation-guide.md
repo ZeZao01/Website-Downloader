@@ -1,0 +1,739 @@
+# Guia de Adaptação — Mira.ai - Intelligence Engine
+
+## 1. Tipografia
+
+
+## 2. Cores & Superfícies
+
+- `#e5e5e5`
+- `#050505`
+- `#fff`
+
+## 3. Componentes
+
+## 4. Layout
+
+
+## 5. Motion & Animações
+
+
+## 6. Estrutura do Projeto
+
+### Arquivos HTML
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-social-automation.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-social-automation.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\digital-architect.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\digital-architect.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\fluxora.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\fluxora.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\genlabs.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\genlabs.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-effect2\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-effect2\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-effect2\assets\filter_3E_3Crect_width__100_25_ef7da59166f5.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-green-effect\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-green-effect\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-pricing\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-pricing\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\lumina-video\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\lumina-video\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\parallax-clean\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\parallax-clean\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\parallax-geometry\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\parallax-geometry\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\wix.com_studio_design_inspiration_spac\design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\wix.com_studio_design_inspiration_spac\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\wix.com_studio_design_inspiration_spac\assets\space_2bbddfd93955.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\wix.com_studio_design_inspiration_spac\assets\space_9a7ddafdc4d4.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\wix.com_studio_design_inspiration_spac\assets\space_9bb330507472.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\wix.com_studio_design_inspiration_spac\assets\space_c097e4a8368c.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animation-clean\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini2\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini2\assets\filter_3E_3Crect_width__100_25_27f522a784f1.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\dashboard-list\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\glass-effect\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\instagram-slides\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\pagina-de-captura\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\sidebar\index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-social-automation.aura.build\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-social-automation.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\digital-architect.aura.build\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\digital-architect.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\fluxora.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\genlabs.aura.build\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\genlabs.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-effect2\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-effect2\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-effect2\assets\._filter_3E_3Crect_width__100_25_ef7da59166f5.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-green-effect\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-green-effect\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-pricing\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-pricing\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\lumina-video\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\lumina-video\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\parallax-clean\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\parallax-clean\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\parallax-geometry\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\._design-system.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\wix.com_studio_design_inspiration_spac\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\wix.com_studio_design_inspiration_spac\assets\._space_2bbddfd93955.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\wix.com_studio_design_inspiration_spac\assets\._space_9a7ddafdc4d4.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\wix.com_studio_design_inspiration_spac\assets\._space_9bb330507472.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\wix.com_studio_design_inspiration_spac\assets\._space_c097e4a8368c.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animation-clean\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini2\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini2\assets\._filter_3E_3Crect_width__100_25_27f522a784f1.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\dashboard-list\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\glass-effect\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\instagram-slides\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\pagina-de-captura\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\._index.html`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\sidebar\._index.html`
+- `Website-Downloader-main\templates\index.html`
+
+### Arquivos CSS
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-automation-17.aura.build\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-social-automation.aura.build\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\ai-social-automation.aura.build\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_5dc1420882f5.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\canvas-visual.aura.build\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\digital-architect.aura.build\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\flux-motion.aura.build\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\fluxora.aura.build\assets\css2_2832c0ff631d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_e01beb4f8743.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\futureui.aura.build\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\genlabs.aura.build\assets\css2_d532a689d235.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-effect2\assets\css2_ac990486f183.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-pricing\assets\all_50a9bdd31fbf.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\glass-pricing\assets\css2_4eed9c50e3bb.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_176e25227b5e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_6c160a0c4e6f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_bd407d5ceb4b.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_e5ca562f8909.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\green-museum\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_2832c0ff631d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\hu169yr\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\animations_055649e54813.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\frontend-lite_584491c599dc.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\frontend-lite_e6c7204e1c39.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\frontend_d2333ec3130c.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\global_73749636fca0.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\header-footer_9bddff70b519.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-1614_81ea4c4b8b3d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-1946_9c39b1c75f41.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-1950_7fea17217793.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2004_f63de365a3f6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2014_0e8530267c36.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2025_49eb3cbb3e4a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2032_eb3c0782ea86.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2036_6877a76eab63.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2043_8b6f382b1f36.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2050_54c7f8a0e74e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2061_048696543563.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2535_76bcd34a63c1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2588_f19cbba3be4d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2590_2c8736259a74.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-2606_1745ed9695cd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-3148_91eed4460ee7.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-3356_3bd1f0768a50.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-3362_a193a18ff24a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-645_c3fc5d65fffc.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\post-6_ecb1ad98c916.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\p_448df28ae5ca.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\style_78cb5f6dcac7.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\swiper_dd84cbd1c363.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\theme_1e7daadda367.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\wib0mpk_47c6c5c24ec6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\widget-icon-box_9bf095d7685a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\imagenation.art\assets\widget-nested-carousel_97e1f2ebe8b0.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\lumina-video\assets\css2_2832c0ff631d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\lumina-video\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\parallax-geometry\assets\css2_5f62d382f7c0.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_4f052ee6d93c.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\volta-ev.aura.build\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_176e25227b5e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_6c160a0c4e6f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_bd407d5ceb4b.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_e5ca562f8909.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\design systems\white-medical\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animation-clean\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_d532a689d235.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\animations-gemini2\assets\css2_604c95cc5779.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\cool-dashboard\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\dashboard-list\assets\css2_0c6ec1a12c79.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\dashboard-list\assets\css2_464fef46b30b.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\glass-effect\assets\all_50a9bdd31fbf.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\glass-effect\assets\css2_4eed9c50e3bb.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_0c6ec1a12c79.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\green-site\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\instagram-slides\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\instagram-slides\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\marketplace-light\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\pagina-de-captura\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\photographer-portifolio\assets\css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\sidebar\assets\css2_43933291f3a2.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\sidebar\assets\css2_62c26cc9a8fc.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\sidebar\assets\css2_cfb014fc4a22.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\referencias\sidebar\assets\css2_e1e42836840d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-automation-17.aura.build\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-social-automation.aura.build\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\ai-social-automation.aura.build\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_5dc1420882f5.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\canvas-visual.aura.build\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\digital-architect.aura.build\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\flux-motion.aura.build\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\fluxora.aura.build\assets\._css2_2832c0ff631d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_e01beb4f8743.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\futureui.aura.build\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\genlabs.aura.build\assets\._css2_d532a689d235.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-effect2\assets\._css2_ac990486f183.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-pricing\assets\._all_50a9bdd31fbf.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\glass-pricing\assets\._css2_4eed9c50e3bb.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_176e25227b5e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_6c160a0c4e6f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_bd407d5ceb4b.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_e5ca562f8909.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\green-museum\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_2832c0ff631d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\hu169yr\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._animations_055649e54813.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._frontend-lite_584491c599dc.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._frontend-lite_e6c7204e1c39.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._frontend_d2333ec3130c.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._global_73749636fca0.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._header-footer_9bddff70b519.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-1614_81ea4c4b8b3d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-1946_9c39b1c75f41.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-1950_7fea17217793.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2004_f63de365a3f6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2014_0e8530267c36.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2025_49eb3cbb3e4a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2032_eb3c0782ea86.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2036_6877a76eab63.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2043_8b6f382b1f36.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2050_54c7f8a0e74e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2061_048696543563.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2535_76bcd34a63c1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2588_f19cbba3be4d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2590_2c8736259a74.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-2606_1745ed9695cd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-3148_91eed4460ee7.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-3356_3bd1f0768a50.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-3362_a193a18ff24a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-645_c3fc5d65fffc.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._post-6_ecb1ad98c916.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._p_448df28ae5ca.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._style_78cb5f6dcac7.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._swiper_dd84cbd1c363.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._theme_1e7daadda367.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._wib0mpk_47c6c5c24ec6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._widget-icon-box_9bf095d7685a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\imagenation.art\assets\._widget-nested-carousel_97e1f2ebe8b0.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\lumina-video\assets\._css2_2832c0ff631d.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\lumina-video\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\parallax-geometry\assets\._css2_5f62d382f7c0.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_4f052ee6d93c.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\volta-ev.aura.build\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_176e25227b5e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_6c160a0c4e6f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_bd407d5ceb4b.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_e5ca562f8909.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\design systems\white-medical\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animation-clean\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_d532a689d235.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\animations-gemini2\assets\._css2_604c95cc5779.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\cool-dashboard\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\dashboard-list\assets\._css2_0c6ec1a12c79.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\dashboard-list\assets\._css2_464fef46b30b.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\glass-effect\assets\._all_50a9bdd31fbf.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\glass-effect\assets\._css2_4eed9c50e3bb.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_0c6ec1a12c79.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\green-site\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\instagram-slides\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\instagram-slides\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\marketplace-light\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\pagina-de-captura\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_0b2072b66163.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_0fc20595ebff.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_19fd9cc6b396.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_23afcbef9bdd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_2b2d87bc82d8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_4fef849c83da.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_62759cd015bd.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_6f16cdd6fd9f.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_70fd47a02eed.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_82ced711bf49.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_86e10c4bcbd4.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_8e191ef32247.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_94cb6f0c406a.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_9b8bf743d4a8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_a7b22b336fe1.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_b52fc18295f8.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_f495c2faa2a6.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\photographer-portifolio\assets\._css2_fa22aa91016e.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\sidebar\assets\._css2_43933291f3a2.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\sidebar\assets\._css2_62c26cc9a8fc.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\sidebar\assets\._css2_cfb014fc4a22.css`
+- `Website-Downloader-main\Formação AI Designer - Asimov\__MACOSX\referencias\sidebar\assets\._css2_e1e42836840d.css`
+- `Website-Downloader-main\static\style.css`
+
+## 7. Instruções de Implementação
+
+1. Copie `design-system-variables.css` para o diretório de estilos do projeto
+2. Importe as variáveis no arquivo CSS principal
+3. Substitua as classes de estilo conforme o mapeamento acima
+4. Ajuste os componentes usando os exemplos do `design-system.html`
+5. Teste responsividade e animações

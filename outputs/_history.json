@@ -1,0 +1,62 @@
+[
+  {
+    "id": "f3b801b1-eab3-414d-95f7-6340fd7aded7",
+    "model_id": "85b1e763-fd0d-414d-9be9-1d894931d693",
+    "model_name": "Mira.ai - Intelligence Engine",
+    "project_id": null,
+    "download_url": "/api/download-output/f3b801b1-eab3-414d-95f7-6340fd7aded7",
+    "preview_url": "/api/preview-output/f3b801b1-eab3-414d-95f7-6340fd7aded7/",
+    "created_at": "2026-04-29T16:03:11.496382Z",
+    "variations": [
+      "Lovable",
+      "Claude Code",
+      "Google Studio",
+      "Universal JSON"
+    ]
+  },
+  {
+    "id": "82c61517-85c4-4929-a945-e811b19cb927",
+    "model_id": "85b1e763-fd0d-414d-9be9-1d894931d693",
+    "model_name": "Mira.ai - Intelligence Engine",
+    "project_id": "459aedfb-7865-45d2-a97b-37b37de829c1",
+    "download_url": "/api/download-output/82c61517-85c4-4929-a945-e811b19cb927",
+    "preview_url": "/api/preview-output/82c61517-85c4-4929-a945-e811b19cb927/",
+    "created_at": "2026-04-29T15:47:35.531426Z",
+    "variations": [
+      "Lovable",
+      "Claude Code",
+      "Google Studio",
+      "Universal JSON"
+    ]
+  },
+  {
+    "id": "0b0fb5bb-0b44-4834-8392-7e290997bb51",
+    "model_id": "85b1e763-fd0d-414d-9be9-1d894931d693",
+    "model_name": "Mira.ai - Intelligence Engine",
+    "project_id": null,
+    "download_url": "/api/download-output/0b0fb5bb-0b44-4834-8392-7e290997bb51",
+    "preview_url": "/api/preview-output/0b0fb5bb-0b44-4834-8392-7e290997bb51/",
+    "created_at": "2026-04-29T15:37:21.006309Z",
+    "variations": [
+      "Lovable",
+      "Claude Code",
+      "Google Studio",
+      "Universal JSON"
+    ]
+  },
+  {
+    "id": "28ba1f57-1c24-492e-9918-79b98def97a8",
+    "model_id": "85b1e763-fd0d-414d-9be9-1d894931d693",
+    "model_name": "Mira.ai - Intelligence Engine",
+    "project_id": "e36a7d26-270d-4709-81fc-52b718101b4c",
+    "download_url": "/api/download-output/28ba1f57-1c24-492e-9918-79b98def97a8",
+    "preview_url": "/api/preview-output/28ba1f57-1c24-492e-9918-79b98def97a8/",
+    "created_at": "2026-04-29T15:06:50.502860Z",
+    "variations": [
+      "Lovable",
+      "Claude Code",
+      "Google Studio",
+      "Universal JSON"
+    ]
+  }
+]

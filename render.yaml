@@ -16,6 +16,6 @@ services:
       - fromContext: true
         key: GROQ_API_KEY
       - fromContext: true
-        key: OPENROUTER_API_KEY
+        key: OPENAI_API_KEY
       - fromContext: true
         key: DESIGN_FACTORY_PASSWORD

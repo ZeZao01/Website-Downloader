@@ -122,5 +122,55 @@ class SupabaseDB:
         except Exception as e:
             print(f"Error uploading file to {bucket}: {e}")
             return None
+    def save_adaptation(self, adaptation_data):
+        """Save an adaptation record."""
+        if self.client:
+            try:
+                res = self.client.table("adaptations").insert(adaptation_data).execute()
+                return res.data
+            except Exception as e:
+                print(f"⚠️ Supabase adaptations save failed ({e}), using local fallback")
+        # Local JSON fallback
+        return self._save_local_adaptation(adaptation_data)
+
+    def get_adaptations(self, limit=50):
+        """Get adaptation history."""
+        if self.client:
+            try:
+                res = (self.client.table("adaptations")
+                       .select("*")
+                       .order("created_at", desc=True)
+                       .limit(limit)
+                       .execute())
+                return res.data
+            except Exception as e:
+                print(f"⚠️ Supabase adaptations fetch failed ({e}), using local fallback")
+        return self._get_local_adaptations(limit)
+
+    def _save_local_adaptation(self, data):
+        path = os.path.join('outputs', '_history.json')
+        history = []
+        if os.path.exists(path):
+            try:
+                with open(path, 'r', encoding='utf-8') as f:
+                    history = json.load(f)
+            except Exception:
+                history = []
+        history.insert(0, data)
+        history = history[:200]  # keep last 200
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(history, f, indent=2, ensure_ascii=False)
+        return data
+
+    def _get_local_adaptations(self, limit=50):
+        path = os.path.join('outputs', '_history.json')
+        if not os.path.exists(path):
+            return []
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                history = json.load(f)
+            return history[:limit]
+        except Exception:
+            return []
 
 db = SupabaseDB()

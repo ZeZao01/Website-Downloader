@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gravit Design Factory</title>
+<meta name="description" content="Sistema de captura, extração e adaptação de modelos web">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- BACKGROUND ANIMATION -->
+    <canvas id="bgCanvas"></canvas>
+
+    <div id="authOverlay" class="auth-overlay active">
+        <div class="auth-card">
+            <div class="auth-glow"></div>
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+            <h1 class="auth-title">Gravit Design Factory</h1>
+            <p style="color: var(--text3); margin-bottom: 2rem; font-size: 0.9rem;">Sistema de Engenharia de Design e Extração de Interface</p>
+            
+            <div class="input-group">
+                <input type="password" id="authPass" placeholder="Chave de Acesso OMNI" autofocus>
+            </div>
+            <p id="authError" class="error-msg"></p>
+            <button onclick="checkAuth()" id="authBtn" class="btn-primary" style="width: 100%; margin-top: 1rem; height: 55px; font-size: 1rem; letter-spacing: 2px;">
+                ATIVAR PROTOCOLO
+            </button>
+        </div>
+    </div>
+
+<!-- MAIN APP -->
+<div id="mainApp">
+<aside class="sidebar">
+<div class="sidebar-logo">
+<span>⚡ Design Factory</span>
+</div>
+<nav class="sidebar-nav">
+<button class="nav-item active" data-stage="capture"><span class="num">01</span><span>Captura</span></button>
+<button class="nav-item" data-stage="extract"><span class="num">02</span><span>Design System</span></button>
+<button class="nav-item" data-stage="upload"><span class="num">03</span><span>Projeto Real</span></button>
+<button class="nav-item" data-stage="adapt"><span class="num">04</span><span>Adaptação</span></button>
+<button class="nav-item" data-stage="gallery" style="margin-top:auto;border-top:1px solid var(--border);padding-top:1rem"><span class="num">📂</span><span>Galeria</span></button>
+</nav>
+</aside>
+
+<main class="main-content">
+<!-- STAGE 1: CAPTURE -->
+<div id="stageCapture" class="stage-panel active">
+<div class="stage-header"><h2>📡 Etapa 1 — Captura de Sites</h2><p>Insira a URL do site de referência para capturar e catalogar</p></div>
+<div class="card">
+<div class="card-title">🌐 URL do Site de Referência</div>
+<div class="url-group">
+<input type="url" id="captureUrl" class="url-input" placeholder="https://exemplo.com">
+<button id="captureBtn" class="btn btn-primary" onclick="startCapture()">Capturar</button>
+</div>
+<div id="captureTerminal" class="terminal"></div>
+<div id="captureSuccess" style="display:none;margin-top:1rem">
+<span class="status-badge success">✅ Captura concluída</span>
+<button class="btn btn-secondary btn-sm" style="margin-left:.5rem" onclick="goStage('extract')">→ Extrair Design System</button>
+</div>
+</div>
+</div>
+
+<!-- STAGE 2: EXTRACT -->
+<div id="stageExtract" class="stage-panel">
+<div class="stage-header"><h2>🧬 Etapa 2 — Extração de Design System</h2><p>Extraia typography, cores, componentes, layout, motion e icons do modelo capturado</p></div>
+<div class="card">
+<div class="card-title">📋 Selecione um modelo para extrair</div>
+<div id="extractModelsList" class="models-grid" style="margin-bottom:1rem"></div>
+<div id="extractResult" style="display:none">
+<span class="status-badge success">✅ Design System extraído</span>
+<div id="extractPreview" style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:10px;max-height:300px;overflow-y:auto;font-size:.8rem;color:var(--text3)"></div>
+</div>
+</div>
+</div>
+
+<!-- STAGE 3: UPLOAD -->
+<div id="stageUpload" class="stage-panel">
+<div class="stage-header"><h2>📦 Etapa 3 — Projeto Real</h2><p>Envie o arquivo ZIP do projeto ou capture via URL</p></div>
+<div class="card" style="margin-bottom:1rem">
+<div class="card-title">📤 Upload de ZIP</div>
+<div class="upload-zone" id="uploadZone" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)" onclick="document.getElementById('fileInput').click()">
+<div class="icon">📁</div>
+<p>Arraste um arquivo ZIP aqui ou clique para selecionar</p>
+</div>
+<input type="file" id="fileInput" accept=".zip" style="display:none" onchange="uploadFile(this.files[0])">
+<div id="uploadStatus" style="display:none"><span class="status-badge processing">⏳ Enviando...</span></div>
+<div id="uploadSuccess" style="display:none"><span class="status-badge success">✅ Projeto carregado</span></div>
+</div>
+<div class="card">
+<div class="card-title">🌐 Ou capture via URL</div>
+<div class="url-group">
+<input type="url" id="projectUrl" class="url-input" placeholder="https://meu-projeto.com">
+<button class="btn btn-primary" onclick="captureProject()">Capturar Projeto</button>
+</div>
+</div>
+</div>
+
+<!-- STAGE 4: ADAPT -->
+<div id="stageAdapt" class="stage-panel">
+<div class="stage-header"><h2>🔧 Etapa 4 — Adaptação</h2><p>Selecione o modelo de design e gere o pacote adaptado</p></div>
+<div class="card">
+<div class="card-title">🎯 Modelo Selecionado</div>
+<div id="selectedModel" style="padding:1rem;background:var(--bg);border-radius:10px;color:var(--text3);margin-bottom:1rem">Nenhum modelo selecionado. Vá à Galeria e escolha um.</div>
+<div class="card-title">📂 Projeto Real</div>
+<div id="selectedProject" style="padding:1rem;background:var(--bg);border-radius:10px;color:var(--text3);margin-bottom:1rem">Nenhum projeto carregado. Vá à Etapa 3.</div>
+<button id="adaptBtn" class="btn btn-primary" onclick="runAdaptation()" disabled>🚀 Gerar Adaptação</button>
+<div id="adaptResult" style="display:none;margin-top:1rem">
+<span class="status-badge success">✅ Adaptação concluída</span>
+<a id="adaptDownload" class="btn btn-secondary btn-sm" style="margin-left:.5rem" href="#" download>⬇ Download Pacote</a>
+</div>
+</div>
+</div>
+
+<!-- GALLERY -->
+<div id="stageGallery" class="stage-panel">
+<div class="stage-header"><h2>📂 Galeria de Modelos</h2><p>Todos os modelos capturados e catalogados</p></div>
+<div class="gallery-filters" id="galleryFilters">
+<button class="filter-chip active" data-filter="all">Todos</button>
+<button class="filter-chip" data-filter="saas-ai">SaaS/AI</button>
+<button class="filter-chip" data-filter="dashboard">Dashboard</button>
+<button class="filter-chip" data-filter="landing">Landing</button>
+<button class="filter-chip" data-filter="portfolio">Portfolio</button>
+<button class="filter-chip" data-filter="ecommerce">E-commerce</button>
+<button class="filter-chip" data-filter="medical">Medical</button>
+<button class="filter-chip" data-filter="glass">Glass</button>
+<button class="filter-chip" data-filter="dark">Dark</button>
+<button class="filter-chip" data-filter="animation">Animation</button>
+</div>
+<div id="galleryGrid" class="models-grid"></div>
+<div id="galleryEmpty" style="text-align:center;padding:3rem;color:var(--text3)">
+<p style="font-size:1.2rem;margin-bottom:.5rem">Nenhum modelo catalogado</p>
+<p>Capture um site na Etapa 1 para começar</p>
+</div>
+</div>
+</main>
+</div>
+
+<script>
+let currentModelId=null,currentProjectId=null,activeFilter='all';
+
+// ELECTRIC LIGHTNING BG ANIMATION
+const canvas = document.getElementById('bgCanvas');
+const ctx = canvas.getContext('2d');
+let bolts = [];
+const mouse = { x: null, y: null };
+
+function initBg() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+class Bolt {
+    constructor() {
+        this.reset();
+    }
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.tx = this.x + (Math.random() - 0.5) * 800;
+        this.ty = this.y + (Math.random() - 0.5) * 400;
+        this.path = [{x: this.x, y: this.y}];
+        this.state = 'waiting';
+        this.timer = Math.random() * 50;
+        this.opacity = 0;
+        this.sparks = [];
+    }
+    update() {
+        if(this.state === 'waiting') {
+            this.timer--;
+            if(this.timer <= 0) this.state = 'striking';
+        } else if(this.state === 'striking') {
+            const last = this.path[this.path.length-1];
+            const dist = Math.hypot(this.tx - last.x, this.ty - last.y);
+            
+            if(dist > 10) {
+                for(let i=0; i<5; i++) {
+                    const angle = Math.atan2(this.ty - last.y, this.tx - last.x);
+                    const next = {
+                        x: last.x + Math.cos(angle) * 30 + (Math.random() - 0.5) * 20,
+                        y: last.y + Math.sin(angle) * 30 + (Math.random() - 0.5) * 20
+                    };
+                    this.path.push(next);
+                    
+                    // Reduced spark count for performance
+                    if(Math.random() > 0.85) {
+                        this.sparks.push({
+                            x: next.x, y: next.y,
+                            vx: (Math.random() - 0.5) * 4,
+                            vy: (Math.random() - 0.5) * 4,
+                            life: 0.8
+                        });
+                    }
+                }
+            } else {
+                this.state = 'fading';
+                this.opacity = 1.5;
+            }
+        } else {
+            this.opacity -= 0.1;
+            this.sparks.forEach(s => {
+                s.x += s.vx; s.y += s.vy;
+                s.life -= 0.05;
+            });
+            if(this.opacity <= 0) this.reset();
+        }
+    }
+    draw() {
+        if(this.state === 'waiting') return;
+        
+        // Draw sparks
+        this.sparks.forEach(s => {
+            if(s.life > 0) {
+                ctx.fillStyle = `rgba(255, 255, 100, ${s.life})`;
+                ctx.fillRect(s.x, s.y, 2, 2);
+            }
+        });
+
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        ctx.shadowColor = '#ffe000';
+        ctx.shadowBlur = 20 * this.opacity;
+        ctx.lineWidth = 2;
+        ctx.moveTo(this.path[0].x, this.path[0].y);
+        for(let i=1; i<this.path.length; i++) {
+            ctx.lineTo(this.path[i].x, this.path[i].y);
+        }
+        ctx.stroke();
+        
+        // Yellow core
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255, 230, 0, ${this.opacity * 0.8})`;
+        ctx.lineWidth = 1;
+        ctx.moveTo(this.path[0].x, this.path[0].y);
+        for(let i=1; i<this.path.length; i++) ctx.lineTo(this.path[i].x, this.path[i].y);
+        ctx.stroke();
+        
+        ctx.shadowBlur = 0;
+    }
+}
+
+for(let i=0; i<2; i++) bolts.push(new Bolt()); // Only 2 bolts at a time for performance
+
+function animateBg() {
+    ctx.fillStyle = `rgba(3, 3, 3, 0.4)`; // Faster fade, less processing
+    ctx.fillRect(0,0,canvas.width, canvas.height);
+    
+    if(flash > 0) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${flash})`;
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        flash -= 0.05;
+    }
+    
+    // ELECTRIC MOUSE SPARKS
+    if(mouse.x && mouse.y) {
+        if(Math.random() > 0.5) {
+            bolts.push({
+                update: function() { this.life -= 0.1; this.x += (Math.random()-0.5)*10; this.y += (Math.random()-0.5)*10; },
+                draw: function() {
+                    if(this.life <= 0) return;
+                    ctx.fillStyle = `rgba(255, 255, 150, ${this.life})`;
+                    ctx.fillRect(this.x, this.y, 2, 2);
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${this.life * 0.5})`;
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + (Math.random()-0.5)*15, this.y + (Math.random()-0.5)*15);
+                    ctx.stroke();
+                },
+                x: mouse.x, y: mouse.y, life: 1, isSpark: true
+            });
+        }
+    }
+    
+    bolts = bolts.filter(b => (b.isSpark ? b.life > 0 : b.opacity > 0 || b.state !== 'fading'));
+
+    bolts.forEach(b => {
+        b.update();
+        b.draw();
+    });
+    
+    requestAnimationFrame(animateBg);
+}
+
+window.addEventListener('resize', initBg);
+document.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    
+    const cards = document.querySelectorAll('.card, .model-card');
+    cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--mouse-x', `${x}%`);
+        card.style.setProperty('--mouse-y', `${y}%`);
+    });
+});
+
+// CLICK TO STRIKE (ZENITSU)
+let flash = 0;
+canvas.addEventListener('mousedown', e => {
+    flash = 0.5;
+    for(let i=0; i<8; i++) {
+        const b = new Bolt();
+        b.x = e.clientX;
+        b.y = e.clientY;
+        b.tx = b.x + (Math.random() - 0.5) * 1000;
+        b.ty = b.y + (Math.random() - 0.5) * 500;
+        b.state = 'striking';
+        bolts.push(b);
+    }
+});
+
+initBg();
+animateBg();
+
+// RECOVERY MEMORY: Auto-restore state
+window.addEventListener('DOMContentLoaded', () => {
+    const activeProject = {{ active_project|tojson if active_project else 'null' }};
+    if (activeProject) {
+        console.log("🧠 Memória: Restaurando projeto", activeProject.id);
+        currentProjectId = activeProject.id;
+        currentModelId = activeProject.design_system_id;
+        
+        document.getElementById('selectedProject').innerHTML = `<strong>${activeProject.name}</strong> — Recuperado`;
+        if (activeProject.status === 'captured') {
+            document.getElementById('uploadSuccess').style.display = 'block';
+        }
+        
+        // Se já tiver modelo, atualiza a UI da etapa 4
+        if (currentModelId) {
+            fetch(`/api/models`).then(r=>r.json()).then(models => {
+                const model = models.find(m => m.id === currentModelId);
+                if (model) {
+                    document.getElementById('selectedModel').innerHTML = `<strong>${model.name}</strong> — Selecionado`;
+                    document.getElementById('adaptBtn').disabled = !(currentModelId && currentProjectId);
+                }
+            });
+        }
+    }
+});
+
+// AUTH
+document.getElementById('authPass').addEventListener('keypress',e=>{if(e.key==='Enter')checkAuth()});
+function checkAuth(){
+const pw=document.getElementById('authPass').value;
+if(!pw)return;
+const btn=document.getElementById('authBtn');
+btn.disabled=true;
+fetch('/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
+.then(r=>r.json().then(d=>({status:r.status,...d})))
+.then(d=>{
+if(d.success){document.getElementById('authOverlay').style.display='none';document.getElementById('mainApp').style.display='flex';loadModels();loadGallery()}
+else{
+document.getElementById('authError').textContent=d.message||'Senha incorreta';
+document.querySelector('.auth-card').classList.add('shake');
+setTimeout(()=>document.querySelector('.auth-card').classList.remove('shake'),400);
+if(d.locked){document.getElementById('authLockout').style.display='block';document.getElementById('authLockout').textContent=d.message}
+}btn.disabled=false;
+}).catch(()=>{btn.disabled=false;document.getElementById('authError').textContent='Erro de conexão'});
+}
+
+// NAV
+document.querySelectorAll('.nav-item').forEach(btn=>{
+btn.addEventListener('click',()=>goStage(btn.dataset.stage));
+});
+function goStage(s){
+document.querySelectorAll('.nav-item').forEach(b=>{b.classList.toggle('active',b.dataset.stage===s)});
+document.querySelectorAll('.stage-panel').forEach(p=>p.classList.remove('active'));
+const map={capture:'stageCapture',extract:'stageExtract',upload:'stageUpload',adapt:'stageAdapt',gallery:'stageGallery'};
+document.getElementById(map[s]).classList.add('active');
+if(s==='extract')loadModels();
+if(s==='gallery')loadGallery();
+}
+
+// STAGE 1: CAPTURE
+function startCapture(){
+const url=document.getElementById('captureUrl').value.trim();
+if(!url){alert('Insira uma URL');return}
+const btn=document.getElementById('captureBtn');
+btn.disabled=true;btn.textContent='Capturando...';
+const term=document.getElementById('captureTerminal');
+term.innerHTML='';term.classList.add('active');
+document.getElementById('captureSuccess').style.display='none';
+fetch('/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})})
+.then(r=>r.json()).then(d=>{
+if(d.error){addLine(term,'❌ '+d.error);btn.disabled=false;btn.textContent='Capturar';return}
+const es=new EventSource('/stream/'+d.session_id);
+es.onmessage=e=>addLine(term,e.data);
+es.addEventListener('done',e=>{
+    es.close();btn.disabled=false;btn.textContent='Capturar';
+    const parts=e.data.split('|');
+    if(parts[0]==='complete'){
+        document.getElementById('captureSuccess').style.display='block';
+        try {
+            const info = JSON.parse(parts[1]);
+            currentModelId = info.model_id;
+            currentProjectId = info.project_id;
+            
+            // Sync session with server
+            if (currentProjectId) {
+                fetch('/api/sync_session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ project_id: currentProjectId })
+                });
+            }
+            document.getElementById('adaptBtn').disabled = false;
+        } catch(err) { console.error("Error parsing capture data", err); }
+    }
+});
+es.onerror=()=>{es.close();btn.disabled=false;btn.textContent='Capturar'};
+});
+}
+function addLine(t,msg){const d=document.createElement('div');d.className='line';d.textContent=msg;t.appendChild(d);t.scrollTop=t.scrollHeight}
+
+// STAGE 2: EXTRACT
+function loadModels(){
+fetch('/api/models').then(r=>r.json()).then(models=>{
+const c=document.getElementById('extractModelsList');
+c.innerHTML=models.map(m=>`<div class="model-card" onclick="extractDS('${m.id}')">
+<div class="model-preview"><div class="placeholder">🌐</div></div>
+<div class="model-info"><div class="model-name">${m.name}</div>
+<div class="model-meta"><span class="tag tag-niche">${m.niche}</span><span class="tag tag-style">${m.style}</span></div>
+${m.has_design_system?'<span class="status-badge success" style="margin-top:.5rem">✅ DS Extraído</span>':''}
+</div></div>`).join('');
+}).catch(()=>{});
+}
+function extractDS(id){
+if(!confirm('Extrair Design System deste modelo?'))return;
+fetch('/api/extract-design-system',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model_id:id})})
+.then(r=>r.json()).then(d=>{
+if(d.success){
+document.getElementById('extractResult').style.display='block';
+const ds=d.design_system;
+let preview='<strong>Typography:</strong> '+ds.typography.length+' estilos<br>';
+preview+='<strong>Colors:</strong> '+ds.colors.length+' cores<br>';
+preview+='<strong>Components:</strong> '+(ds.components.buttons?.length||0)+' buttons, '+(ds.components.cards?.length||0)+' cards<br>';
+preview+='<strong>Motion:</strong> '+(ds.motion.keyframes?.length||0)+' keyframes<br>';
+preview+='<strong>Icons:</strong> '+ds.icons.length+' icons';
+document.getElementById('extractPreview').innerHTML=preview;
+currentModelId=id;
+}else alert(d.error||'Erro');
+});
+}
+
+// STAGE 3: UPLOAD
+function dragOver(e){e.preventDefault();document.getElementById('uploadZone').classList.add('dragover')}
+function dragLeave(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('dragover')}
+function dropFile(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('dragover');if(e.dataTransfer.files[0])uploadFile(e.dataTransfer.files[0])}
+function uploadFile(file){
+if(!file||!file.name.endsWith('.zip')){alert('Apenas arquivos ZIP');return}
+document.getElementById('uploadStatus').style.display='block';
+document.getElementById('uploadSuccess').style.display='none';
+const fd=new FormData();fd.append('file',file);
+fetch('/api/upload-project',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{
+document.getElementById('uploadStatus').style.display='none';
+if(d.success){
+currentProjectId=d.project_id;
+document.getElementById('uploadSuccess').style.display='block';
+document.getElementById('selectedProject').innerHTML=`<strong>${file.name}</strong> — ${d.file_count} arquivos`;
+document.getElementById('adaptBtn').disabled=!(currentModelId&&currentProjectId);
+}else alert(d.error);
+});
+}
+function captureProject(){
+const url=document.getElementById('projectUrl').value.trim();
+if(!url)return;
+fetch('/api/capture-project',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})})
+.then(r=>r.json()).then(d=>{
+if(d.success){currentProjectId=d.project_id;document.getElementById('uploadSuccess').style.display='block';
+document.getElementById('selectedProject').innerHTML=`<strong>${url}</strong> — capturado`;
+document.getElementById('adaptBtn').disabled=!(currentModelId&&currentProjectId);}
+else alert(d.error);
+});
+}
+
+// STAGE 4: ADAPT
+function runAdaptation(){
+    if(!currentModelId) { alert('Por favor, selecione um modelo na Galeria primeiro.'); return; }
+    
+    const btn=document.getElementById('adaptBtn');
+    btn.disabled=true;btn.textContent='⚡ Gerando...';
+    
+    const payload = { model_id: currentModelId };
+    if(currentProjectId) payload.project_id = currentProjectId;
+    
+    fetch('/api/adapt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(r=>r.json()).then(d=>{
+        btn.disabled=false;btn.textContent='🚀 Gerar Adaptação';
+        if(d.success){
+            document.getElementById('adaptResult').style.display='block';
+            document.getElementById('adaptDownload').href=d.download_url;
+        } else {
+            document.getElementById('adaptResult').style.display='block';
+            document.getElementById('adaptResult').innerHTML = `
+                <span class="status-badge" style="background:var(--red)">❌ Erro</span>
+                <pre style="margin-top:0.5rem;font-size:0.7rem;color:#ffca28;background:#111;padding:1rem;border-radius:8px;white-space:pre-wrap">${d.error}</pre>
+            `;
+        }
+    }).catch(err=>{
+        btn.disabled=false;btn.textContent='🚀 Gerar Adaptação';
+        alert('Erro de rede: ' + err.message);
+    });
+}
+
+// GALLERY
+function loadGallery(){
+    console.log("📂 Carregando galeria...");
+    fetch('/api/models').then(r=>r.json()).then(models=>{
+        const grid=document.getElementById('galleryGrid');
+        const empty=document.getElementById('galleryEmpty');
+        
+        if(models.error) {
+            grid.innerHTML='';
+            empty.style.display='block';
+            empty.innerHTML = `
+                <div style="background: rgba(255,0,0,0.1); border: 2px solid var(--red); padding: 2rem; border-radius: 20px; text-align: left; max-width: 800px; margin: 0 auto;">
+                    <h3 style="color:var(--red); margin-bottom: 1rem;">❌ DIAGNÓSTICO DE FALHA ATIVADO</h3>
+                    <p style="color: #fff; margin-bottom: 1rem;">O sistema detectou um erro técnico ao carregar a galeria:</p>
+                    <pre style="font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #ffca28; background: #000; padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); overflow-x: auto; white-space: pre-wrap;">
+${models.error}
+                    </pre>
+                    <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.7;">💡 Dica: Isso pode ser falta de chaves no Railway ou erro de RLS no Supabase.</p>
+                </div>
+            `;
+            return;
+        }
+
+        if(!models || !models.length){
+            grid.innerHTML='';
+            empty.style.display='block';
+            empty.innerHTML = `<p>Nenhum modelo catalogado<br><span style="font-size:0.8rem;opacity:0.5">Capture um site na Etapa 1 para começar</span></p>`;
+            return;
+        }
+        
+        empty.style.display='none';
+        
+        // Se o filtro for 'all', mostra tudo. Senão, filtra.
+        const filtered = activeFilter === 'all' 
+            ? models 
+            : models.filter(m => {
+                const niche = (m.niche || '').toLowerCase();
+                const style = (m.style || '').toLowerCase();
+                const f = activeFilter.toLowerCase();
+                return niche.includes(f) || style.includes(f);
+            });
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '';
+            empty.style.display = 'block';
+            empty.innerHTML = `<p>Nenhum modelo encontrado para o filtro "${activeFilter}"</p>`;
+            return;
+        }
+
+        grid.innerHTML=filtered.map(m=>`
+            <div class="model-card" style="animation: fadeIn 0.5s ease forwards;">
+                <div class="model-preview" style="background: ${m.screenshot_url ? 'none' : 'linear-gradient(45deg, #111, #222)'}">
+                    ${m.screenshot_url 
+                        ? `<img src="${m.screenshot_url}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;" 
+                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` 
+                        : ''
+                    }
+                    <div class="placeholder" style="${m.screenshot_url ? 'display:none;' : ''}display:flex;flex-direction:column;align-items:center;gap:0.5rem">
+                        <span style="font-size:2rem">⚡</span>
+                        <span style="font-size:0.6rem;opacity:0.5;text-transform:uppercase;letter-spacing:1px">Preview Indisponível</span>
+                    </div>
+                    ${m.has_design_system ? '<div class="status-badge success" style="position:absolute;top:10px;right:10px;font-size:0.6rem;z-index:2">🧬 DS OK</div>' : ''}
+                </div>
+                <div class="model-info">
+                    <div class="model-name">${m.name}</div>
+                    <div class="model-meta">
+                        <span class="tag tag-niche">${m.niche}</span>
+                        <span class="tag tag-style">${m.style}</span>
+                    </div>
+                    <div class="model-actions" style="margin-top:1rem;display:flex;gap:0.5rem">
+                        <button class="btn btn-sm btn-primary" style="padding:0.4rem 1rem;font-size:0.7rem" onclick="selectModel('${m.id}','${m.name.replace(/'/g,"\\'")}')">Usar</button>
+                        <a class="btn btn-sm btn-secondary" style="padding:0.4rem 0.8rem" href="/api/models/${m.id}/download">⬇</a>
+                    </div>
+                </div>
+            </div>`).join('');
+    });
+}
+document.querySelectorAll('.filter-chip').forEach(c=>{
+c.addEventListener('click',()=>{
+document.querySelectorAll('.filter-chip').forEach(x=>x.classList.remove('active'));
+c.classList.add('active');activeFilter=c.dataset.filter;loadGallery();
+});
+});
+function selectModel(id,name){
+    currentModelId=id;
+    
+    // Update the display in Stage 4
+    const selectedDisplay = document.getElementById('selectedModel');
+    selectedDisplay.innerHTML=`<div style="display:flex;align-items:center;gap:1rem">
+        <span style="font-size:1.5rem">🎯</span>
+        <div>
+            <div style="font-size:0.7rem;text-transform:uppercase;opacity:0.5">Modelo Ativo</div>
+            <div style="font-weight:700;color:var(--accent)">${name}</div>
+        </div>
+    </div>`;
+    
+    // Always enable the adapt button - backend handles missing project gracefully
+    document.getElementById('adaptBtn').disabled = false;
+    
+    // Navigate to adapt stage
+    setTimeout(() => goStage('adapt'), 300);
+}
+function deleteModel(id){if(confirm('Excluir este modelo?'))fetch('/api/models/'+id,{method:'DELETE'}).then(()=>loadGallery())}
+</script>
+</body>
+</html>
