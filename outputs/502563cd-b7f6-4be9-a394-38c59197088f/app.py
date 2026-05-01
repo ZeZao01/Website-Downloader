@@ -29,7 +29,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'gdf-fallback-secret-key')
-app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB max upload
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max upload
 
 # ─── Security Config ───
 PASSWORD_HASH = hashlib.sha256(
@@ -68,7 +68,7 @@ session_lock = threading.Lock()
 
 @app.after_request
 def add_security_headers(response):
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-XSS-Protection'] = '1; mode=block'
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
@@ -78,18 +78,9 @@ def add_security_headers(response):
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com; "
         "img-src 'self' data: blob:; "
-        "frame-src 'self'; "
         "connect-src 'self'"
     )
     return response
-
-
-@app.errorhandler(413)
-def request_entity_too_large(error):
-    return jsonify({
-        'error': 'O arquivo é muito grande! O limite atual é de 500MB.',
-        'suggestion': 'Remova pastas como node_modules ou .git do seu ZIP antes de enviar.'
-    }), 413
 
 
 def _get_client_ip():
@@ -230,7 +221,7 @@ def _process_capture(sid, url):
         return
 
     download_dir = os.path.join(DOWNLOAD_FOLDER, sid)
-    temp_zip_path = os.path.join(DOWNLOAD_FOLDER, f"{sid}.zip")
+    zip_path = os.path.join(DOWNLOAD_FOLDER, f"{sid}.zip")
 
     def log_cb(msg):
         q.put(msg)
@@ -259,7 +250,7 @@ def _process_capture(sid, url):
                 with session_lock:
                     download_results[sid] = {
                         'status': 'complete', 
-                        'zip_path': os.path.join(DOWNLOAD_FOLDER, f"{existing_model.get('id')}.zip"),
+                        'zip_path': existing_model.get('zip_storage_path'),
                         'filename': f"{existing_model.get('name')}.zip", 
                         'model_id': existing_model.get('id'),
                         'created_at': time.time(),
@@ -293,22 +284,7 @@ def _process_capture(sid, url):
             metadata = extract_metadata_from_html(html_content)
 
         q.put("📦 Criando arquivo ZIP...")
-        zip_directory(download_dir, temp_zip_path)
-        
-        # Rename ZIP to use model_id so other endpoints can find it
-        zip_path = os.path.join(DOWNLOAD_FOLDER, f"{model_id}.zip")
-        if temp_zip_path != zip_path:
-            try:
-                if os.path.exists(zip_path):
-                    os.remove(zip_path)
-                os.rename(temp_zip_path, zip_path)
-            except Exception:
-                # If rename fails, copy instead
-                shutil.copy2(temp_zip_path, zip_path)
-                try:
-                    os.remove(temp_zip_path)
-                except Exception:
-                    pass
+        zip_directory(download_dir, zip_path)
 
         q.put("🎉 Captura concluída e catalogada!")
         
@@ -318,16 +294,9 @@ def _process_capture(sid, url):
             q.put("☁️ Sincronizando com Supabase...")
             storage_path = db.upload_file("model-zips", f"{model_id}.zip", zip_path)
 
-        # Clean and prioritize naming
-        site_title = metadata.get('title', '').strip()
-        if not site_title or site_title.lower() in ('home', 'index', 'welcome'):
-            display_name = site_name
-        else:
-            display_name = site_title
-
         model_entry = {
             'id': model_id,
-            'name': display_name,
+            'name': metadata.get('title', site_name),
             'url': url,
             'content_hash': current_hash,
             'niche': metadata.get('niche', 'general'),
@@ -370,7 +339,7 @@ def _process_capture(sid, url):
         q.put(f"❌ Erro: {str(e)}")
         with session_lock:
             download_results[sid] = {'status': 'error', 'error': str(e), 'created_at': time.time()}
-        for p in [download_dir, temp_zip_path]:
+        for p in [download_dir, zip_path]:
             if os.path.exists(p):
                 try:
                     (shutil.rmtree if os.path.isdir(p) else os.remove)(p)
@@ -434,20 +403,17 @@ def extract_design_system():
     if not model:
         return jsonify({'error': 'Model not found'}), 404
 
-    # Try local ZIP first, then remote storage
-    zip_path = os.path.join(DOWNLOAD_FOLDER, f"{model_id}.zip")
+    zip_path = model.get('zip_path') or os.path.join(DOWNLOAD_FOLDER, f"{model_id}.zip")
     if not os.path.exists(zip_path):
-        storage_path = model.get('zip_storage_path', '')
+        # Try to download from storage if not on disk
+        storage_path = model.get('zip_storage_path')
         if storage_path and storage_path.startswith('http'):
-            try:
-                r = requests.get(storage_path, timeout=60)
-                r.raise_for_status()
-                with open(zip_path, 'wb') as f:
-                    f.write(r.content)
-            except Exception as dl_err:
-                return jsonify({'error': f'Failed to download ZIP: {dl_err}'}), 404
+            import requests
+            r = requests.get(storage_path)
+            with open(zip_path, 'wb') as f:
+                f.write(r.content)
         else:
-            return jsonify({'error': 'Model ZIP not found (no local file or remote URL)'}), 404
+            return jsonify({'error': 'Model ZIP not found'}), 404
 
     try:
         extract_dir = os.path.join(DOWNLOAD_FOLDER, f"extract_{model_id}")
@@ -466,11 +432,12 @@ def extract_design_system():
         with open(index_path, 'r', encoding='utf-8', errors='ignore') as f:
             html = f.read()
 
-        extractor = DesignSystemExtractor(html, model.get('url', ''))
+        extractor = DesignSystemExtractor(html, model.get('source_url', ''))
         ds_data = extractor.extract_all()
 
-        # Only update specific fields to avoid overwriting with stale data
-        db.update_model_design_system(model_id, ds_data)
+        model['design_system'] = ds_data
+        model['has_design_system'] = True
+        db.upsert_model(model)
 
         shutil.rmtree(extract_dir, ignore_errors=True)
         return jsonify({'success': True, 'design_system': ds_data})
@@ -485,52 +452,40 @@ def extract_design_system():
 @app.route('/api/upload-project', methods=['POST'])
 @require_auth
 def upload_project():
-    try:
-        if 'file' not in request.files:
-            return jsonify({'error': 'Nenhum arquivo enviado'}), 400
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file uploaded'}), 400
 
-        file = request.files['file']
-        if not file.filename or not file.filename.endswith('.zip'):
-            return jsonify({'error': 'Apenas arquivos ZIP são permitidos'}), 400
+    file = request.files['file']
+    if not file.filename or not file.filename.endswith('.zip'):
+        return jsonify({'error': 'Only ZIP files are accepted'}), 400
 
-        project_id = str(uuid.uuid4())
-        zip_path = os.path.join(UPLOAD_FOLDER, f"{project_id}.zip")
-        file.save(zip_path)
+    project_id = str(uuid.uuid4())
+    zip_path = os.path.join(UPLOAD_FOLDER, f"{project_id}.zip")
+    file.save(zip_path)
 
-        extract_dir = os.path.join(UPLOAD_FOLDER, project_id)
-        extract_zip_project(zip_path, extract_dir)
+    extract_dir = os.path.join(UPLOAD_FOLDER, project_id)
+    extract_zip_project(zip_path, extract_dir)
 
-        structure = {'html': [], 'css': [], 'js': [], 'assets': []}
-        for root, _, files in os.walk(extract_dir):
-            for f in files:
-                rel = os.path.relpath(os.path.join(root, f), extract_dir)
-                ext = os.path.splitext(f)[1].lower()
-                if ext in ('.html', '.htm'):
-                    structure['html'].append(rel)
-                elif ext in ('.css', '.scss'):
-                    structure['css'].append(rel)
-                elif ext in ('.js', '.ts', '.jsx', '.tsx'):
-                    structure['js'].append(rel)
-                elif ext in ('.png', '.jpg', '.svg', '.webp', '.gif'):
-                    structure['assets'].append(rel)
+    structure = {'html': [], 'css': [], 'js': [], 'assets': []}
+    for root, _, files in os.walk(extract_dir):
+        for f in files:
+            rel = os.path.relpath(os.path.join(root, f), extract_dir)
+            ext = os.path.splitext(f)[1].lower()
+            if ext in ('.html', '.htm'):
+                structure['html'].append(rel)
+            elif ext in ('.css', '.scss'):
+                structure['css'].append(rel)
+            elif ext in ('.js', '.ts', '.jsx', '.tsx'):
+                structure['js'].append(rel)
+            elif ext in ('.png', '.jpg', '.svg', '.webp', '.gif'):
+                structure['assets'].append(rel)
 
-        # Persistence: Save project record to Supabase
-        db.save_project({
-            'id': project_id,
-            'name': file.filename,
-            'status': 'uploaded',
-            'structure': structure,
-            'zip_path': zip_path
-        })
-
-        return jsonify({
-            'success': True,
-            'project_id': project_id,
-            'structure': structure,
-            'file_count': sum(len(v) for v in structure.values()),
-        })
-    except Exception as e:
-        return jsonify({'error': f"Erro ao processar o arquivo ZIP: {str(e)}"}), 500
+    return jsonify({
+        'success': True,
+        'project_id': project_id,
+        'structure': structure,
+        'file_count': sum(len(v) for v in structure.values()),
+    })
 
 
 @app.route('/api/capture-project', methods=['POST'])
@@ -586,6 +541,7 @@ def adapt_project():
     if not model:
         return jsonify({'error': f'Modelo não encontrado no banco (ID: {model_id[:8]}...)'}), 404
 
+    # Build design system data - use extracted DS if available, otherwise build minimal from metadata
     ds_data = model.get('design_system')
     if not ds_data:
         ds_data = {
@@ -599,221 +555,65 @@ def adapt_project():
             'icons': [],
         }
 
-    session_id = str(uuid.uuid4())
-    with session_lock:
-        message_queues[session_id] = queue.Queue()
-        download_results[session_id] = {
-            'status': 'processing',
-            'started_at': time.time(),
-        }
+    # Determine project directory
+    project_dir = None
+    if project_id:
+        candidate = os.path.join(UPLOAD_FOLDER, project_id)
+        if os.path.isdir(candidate):
+            project_dir = candidate
 
-    def run_adaptation():
-        try:
-            project_dir = None
-            if project_id:
-                candidate = os.path.join(UPLOAD_FOLDER, project_id)
-                if os.path.isdir(candidate):
-                    project_dir = candidate
+    # If no project dir exists, create a minimal placeholder so adapter can still generate the package
+    if not project_dir:
+        project_dir = os.path.join(UPLOAD_FOLDER, f"placeholder_{model_id[:8]}")
+        os.makedirs(project_dir, exist_ok=True)
+        # Create a minimal index.html so the adapter has something to work with
+        placeholder_html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="UTF-8"><title>{model.get('name', 'Projeto')}</title>
+<link rel="stylesheet" href="design-system-variables.css"></head>
+<body>
+<h1>{model.get('name', 'Projeto')}</h1>
+<p>Aplique o Design System conforme o guia de adaptação.</p>
+</body></html>"""
+        with open(os.path.join(project_dir, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(placeholder_html)
 
-            if not project_dir:
-                project_dir = os.path.join(UPLOAD_FOLDER, f"placeholder_{model_id[:8]}")
-                os.makedirs(project_dir, exist_ok=True)
-                placeholder_html = f"<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Projeto</title><link rel='stylesheet' href='design-system-variables.css'></head><body><h1>{model.get('name', 'Projeto')}</h1></body></html>"
-                with open(os.path.join(project_dir, 'index.html'), 'w', encoding='utf-8') as f:
-                    f.write(placeholder_html)
+    try:
+        output_id = str(uuid.uuid4())
+        output_dir = os.path.join(OUTPUT_FOLDER, output_id)
 
-            output_id = str(uuid.uuid4())
-            output_dir = os.path.join(OUTPUT_FOLDER, output_id)
+        adapter = StructureAdapter(ds_data, project_dir)
+        adapter.create_adaptation_package(output_dir)
 
-            def log_step(msg):
-                print(f"[Adaptation {output_id[:6]}] {msg}")
-                with session_lock:
-                    q = message_queues.get(session_id)
-                if q:
-                    q.put(msg)
+        zip_path = os.path.join(OUTPUT_FOLDER, f"{output_id}.zip")
+        create_output_zip(output_dir, zip_path)
+        shutil.rmtree(output_dir, ignore_errors=True)
 
-            log_step("Inicializando processo de adaptação estrutural...")
-            adapter = StructureAdapter(ds_data, project_dir, log_callback=log_step)
-            adapter.create_adaptation_package(output_dir)
-
-            log_step("Compactando os arquivos adaptados...")
-            zip_path = os.path.join(OUTPUT_FOLDER, f"{output_id}.zip")
-            create_output_zip(output_dir, zip_path)
-            shutil.rmtree(output_dir, ignore_errors=True)
-
-            if project_id:
-                db.update_project(project_id, {
-                    'selected_model_id': model_id,
-                    'status': 'adapted',
-                    'adaptation_result_path': zip_path
-                })
-
-            # Save to history
-            from datetime import datetime
-            db.save_adaptation({
-                'id': output_id,
-                'model_id': model_id,
-                'model_name': model.get('name', 'Desconhecido'),
-                'project_id': project_id,
-                'download_url': f'/api/download-output/{output_id}',
-                'preview_url': f'/api/preview-output/{output_id}/',
-                'created_at': datetime.utcnow().isoformat() + 'Z',
-                'variations': ['Lovable', 'Claude Code', 'Google Studio', 'Universal JSON']
+        # Update project in Supabase
+        if project_id:
+            db.update_project(project_id, {
+                'selected_model_id': model_id,
+                'adaptation_status': 'complete',
+                'adaptation_result_path': zip_path
             })
 
-            log_step("Finalizando! Preparando preview...")
-            payload = json.dumps({
-                "output_id": output_id,
-                "download_url": f"/api/download-output/{output_id}",
-                "preview_url": f"/api/preview-output/{output_id}/"
-            })
-            with session_lock:
-                q = message_queues.get(session_id)
-            if q:
-                q.put(f"COMPLETE_DATA|{payload}")
-
-            # Small delay to ensure the stream consumer reads COMPLETE_DATA
-            # before we set status to 'complete' (which triggers stream close)
-            time.sleep(0.5)
-
-            with session_lock:
-                download_results[session_id] = {
-                    'status': 'complete',
-                    'created_at': time.time(),
-                }
-
-        except Exception as e:
-            import traceback
-            error_msg = f"Erro na Adaptação: {str(e)}"
-            print(f"❌ {error_msg}")
-            print(traceback.format_exc())
-            with session_lock:
-                q = message_queues.get(session_id)
-            if q:
-                q.put(error_msg)
-            with session_lock:
-                download_results[session_id] = {
-                    'status': 'error',
-                    'error': str(e),
-                    'created_at': time.time(),
-                }
-
-    threading.Thread(target=run_adaptation, daemon=True).start()
-    return jsonify({'success': True, 'session_id': session_id})
-
-
-@app.route('/api/history')
-@require_auth
-def get_history():
-    history = db.get_adaptations(limit=50)
-    return jsonify(history)
-
-
-@app.route('/api/variation/<output_id>/<variation_name>')
-@require_auth
-def get_variation(output_id, variation_name):
-    valid_vars = ['prompt-lovable.md', 'prompt-claude-code.md', 'prompt-google-studio.md', 'integration-data.json']
-    if variation_name not in valid_vars:
-        return "Invalid variation", 400
-        
-    target_dir = os.path.abspath(os.path.join(OUTPUT_FOLDER, output_id))
-    zip_path = os.path.abspath(os.path.join(OUTPUT_FOLDER, f"{output_id}.zip"))
-    
-    if not os.path.exists(target_dir):
-        if os.path.exists(zip_path):
-            os.makedirs(target_dir, exist_ok=True)
-            with zipfile.ZipFile(zip_path, 'r') as z:
-                z.extractall(target_dir)
-        else:
-            return "Output not found", 404
-            
-    var_path = os.path.join(target_dir, '_variações', variation_name)
-    if os.path.exists(var_path):
-        with open(var_path, 'r', encoding='utf-8') as f:
-            return f.read()
-    return "Variation not found", 404
+        return jsonify({
+            'success': True,
+            'output_id': output_id,
+            'download_url': f'/api/download-output/{output_id}',
+        })
+    except Exception as e:
+        import traceback
+        return jsonify({'error': f'{str(e)}\n{traceback.format_exc()}'}), 500
 
 
 @app.route('/api/download-output/<output_id>')
 @require_auth
 def download_output(output_id):
-    zip_path = os.path.abspath(os.path.join(OUTPUT_FOLDER, f"{output_id}.zip"))
+    zip_path = os.path.join(OUTPUT_FOLDER, f"{output_id}.zip")
     if not os.path.exists(zip_path):
         return "File not found", 404
-    
-    dl_name = f"adaptation-{output_id[:8]}.zip"
-    try:
-        return send_file(zip_path, as_attachment=True, download_name=dl_name)
-    except TypeError:
-        # Fallback for older Werkzeug/Flask versions
-        return send_file(zip_path, as_attachment=True, attachment_filename=dl_name)
-
-
-@app.route('/api/preview-output/<output_id>/')
-@app.route('/api/preview-output/<output_id>/<path:filename>')
-@require_auth
-def preview_output(output_id, filename=None):
-    """Serve the adapted project for preview with smart entry-point detection."""
-    target_dir = os.path.abspath(os.path.join(OUTPUT_FOLDER, output_id))
-    zip_path = os.path.abspath(os.path.join(OUTPUT_FOLDER, f"{output_id}.zip"))
-    
-    if not os.path.exists(target_dir):
-        if os.path.exists(zip_path):
-            try:
-                os.makedirs(target_dir, exist_ok=True)
-                with zipfile.ZipFile(zip_path, 'r') as z:
-                    z.extractall(target_dir)
-            except Exception as e:
-                return f"Error extracting preview: {str(e)}", 500
-        else:
-            return "Preview ZIP not found on server", 404
-            
-    project_subpath = os.path.join(target_dir, 'project')
-    serve_from = project_subpath if os.path.exists(project_subpath) else target_dir
-    
-    # Smart index.html detection if no filename or just root
-    if not filename or filename in ('index.html', ''):
-        # Look for index.html recursively if not at root
-        if not os.path.exists(os.path.join(serve_from, 'index.html')):
-            for root, _, files in os.walk(serve_from):
-                if 'index.html' in files:
-                    serve_from = root
-                    filename = 'index.html'
-                    break
-        else:
-            filename = 'index.html'
-
-    if not filename:
-        return "No entry point found", 404
-
-    # Security: Prevent path traversal
-    if '..' in filename or filename.startswith('/') or filename.startswith('\\'):
-        return "Invalid path", 400
-
-    file_path = os.path.join(serve_from, filename)
-    if os.path.exists(file_path):
-        return send_file(file_path)
-    else:
-        return f"File {filename} not found in {serve_from}", 404
-
-
-@app.route('/api/debug/verify-flow')
-@require_auth
-def verify_flow():
-    """Internal logic validation diagnostic."""
-    results = {
-        'folders': {
-            'upload': os.path.exists(UPLOAD_FOLDER),
-            'output': os.path.exists(OUTPUT_FOLDER),
-            'models': os.path.exists(os.path.join('static', 'models'))
-        },
-        'database': 'connected' if db else 'failed',
-        'env': {
-            'supabase': bool(os.getenv('SUPABASE_URL')),
-            'openai': bool(os.getenv('OPENAI_API_KEY'))
-        }
-    }
-    return jsonify({'success': True, 'diagnostics': results})
+    return send_file(zip_path, as_attachment=True, download_name=f"adaptation-{output_id[:8]}.zip")
 
 
 # ═══════════════════════════════════════════
@@ -830,24 +630,7 @@ def list_models():
         models = db.get_models()
         if models is None:
             return jsonify({'error': '❌ O Supabase não retornou dados. Verifique o RLS ou se a tabela "models" existe.'})
-            
-        # Filtra apenas modelos que possuem arquivo ZIP (Supabase Storage ou local)
-        # Isso garante que a galeria só mostre o que é "adaptável"
-        filtered_models = []
-        for m in models:
-            storage_path = m.get('zip_storage_path', '') or ''
-            has_remote = bool(storage_path.startswith('http'))
-            local_path = os.path.join(DOWNLOAD_FOLDER, f"{m.get('id', '')}.zip")
-            has_local = os.path.exists(local_path)
-            
-            if has_remote or has_local:
-                filtered_models.append(m)
-        
-        # If no filtered models but we have models, show all (first-time users)
-        if not filtered_models and models:
-            filtered_models = models
-        
-        return jsonify(filtered_models)
+        return jsonify(models)
     except Exception as e:
         import traceback
         return jsonify({'error': f'DEBUG: {str(e)}\n{traceback.format_exc()}'}), 500
@@ -868,25 +651,11 @@ def download_model(model_id):
     model = db.get_model(model_id)
     if not model:
         return "Not found", 404
-    zip_path = os.path.join(DOWNLOAD_FOLDER, f"{model_id}.zip")
+    zip_path = model.get('zip_path') or os.path.join(DOWNLOAD_FOLDER, f"{model_id}.zip")
     if not os.path.exists(zip_path):
-        # Try downloading from Supabase Storage
-        storage_path = model.get('zip_storage_path', '')
-        if storage_path and storage_path.startswith('http'):
-            try:
-                r = requests.get(storage_path, timeout=60)
-                r.raise_for_status()
-                with open(zip_path, 'wb') as f:
-                    f.write(r.content)
-            except Exception:
-                return "File not found (remote download failed)", 404
-        else:
-            return "File not found", 404
+        return "File not found", 404
     name = model.get('name', model_id[:8])
-    try:
-        return send_file(zip_path, as_attachment=True, download_name=f"{name}.zip")
-    except TypeError:
-        return send_file(zip_path, as_attachment=True, attachment_filename=f"{name}.zip")
+    return send_file(zip_path, as_attachment=True, download_name=f"{name}.zip")
 
 
 @app.route('/api/models/<model_id>', methods=['DELETE'])
@@ -898,8 +667,8 @@ def delete_model(model_id):
     
     db.delete_model(model_id)
     
-    zip_path = os.path.join(DOWNLOAD_FOLDER, f"{model_id}.zip")
-    if os.path.exists(zip_path):
+    zip_path = model.get('zip_path')
+    if zip_path and os.path.exists(zip_path):
         try:
             os.remove(zip_path)
         except Exception:

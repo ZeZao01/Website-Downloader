@@ -150,14 +150,29 @@ class StructureAdapter:
         return '\n'.join(guide)
 
     def generate_ai_adaptation_plan(self, structure):
-        """Use OpenAI to generate a detailed adaptation plan."""
-        api_key = os.getenv('OPENAI_API_KEY')
-        if not api_key:
-            self.log("⚠️ OPENAI_API_KEY não configurado. Pulando plano de IA.")
+        """Use AI to generate a detailed adaptation plan (Groq or OpenAI)."""
+        # Determine which AI provider to use
+        openai_key = os.getenv('OPENAI_API_KEY', '')
+        groq_key = os.getenv('GROQ_API_KEY', '')
+
+        # Detect OpenRouter keys (sk-or-v1-...) — they don't work on api.openai.com
+        is_real_openai = openai_key and openai_key.startswith('sk-') and not openai_key.startswith('sk-or-')
+
+        if is_real_openai:
+            api_key = openai_key
+            api_url = "https://api.openai.com/v1/chat/completions"
+            model = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
+            provider_name = "OpenAI"
+        elif groq_key:
+            api_key = groq_key
+            api_url = "https://api.groq.com/openai/v1/chat/completions"
+            model = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')
+            provider_name = "Groq"
+        else:
+            self.log("⚠️ Nenhuma API key válida configurada (OpenAI/Groq). Pulando plano de IA.")
             return None
 
-        self.log("🤖 Solicitando plano de adaptação inteligente à OpenAI...")
-        model = os.getenv('OPENAI_MODEL', 'gpt-4o-mini') 
+        self.log(f"🤖 Solicitando plano de adaptação inteligente via {provider_name}...")
         
         # Limit the JSON size to avoid hitting token limits or timeouts
         structure_str = json.dumps(structure, indent=2)
@@ -189,14 +204,19 @@ Return a detailed markdown report."""
                 "model": model,
                 "messages": [{"role": "user", "content": prompt}]
             }
-            res = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload, timeout=25)
+            res = requests.post(api_url, headers=headers, json=payload, timeout=30)
             if res.status_code == 200:
-                self.log("✅ Plano de IA gerado com sucesso.")
+                self.log(f"✅ Plano de IA gerado com sucesso via {provider_name}.")
                 return res.json()['choices'][0]['message']['content']
             else:
-                self.log(f"⚠️ Erro na API OpenAI: {res.status_code}")
+                error_detail = ''
+                try:
+                    error_detail = res.json().get('error', {}).get('message', res.text[:200])
+                except Exception:
+                    error_detail = res.text[:200]
+                self.log(f"⚠️ Erro na API {provider_name} ({res.status_code}): {error_detail}")
         except Exception as e:
-            self.log(f"❌ Falha na chamada de IA: {e}")
+            self.log(f"❌ Falha na chamada de IA ({provider_name}): {e}")
         return None
 
     def _build_css_block(self):

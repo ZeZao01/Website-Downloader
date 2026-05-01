@@ -1,0 +1,16 @@
+# Gravit Design Factory - Git Ignore
+.env
+__pycache__/
+*.pyc
+venv/
+.venv
+node_modules/
+.DS_Store
+models_catalog.json
+downloaded_sites/
+projects/
+adaptation_outputs/
+Formação AI Designer - Asimov/
+build.sh
+*.zip
+*.log

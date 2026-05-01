@@ -1,5 +1,35 @@
 [
   {
+    "id": "502563cd-b7f6-4be9-a394-38c59197088f",
+    "model_id": "85b1e763-fd0d-414d-9be9-1d894931d693",
+    "model_name": "Mira.ai - Intelligence Engine",
+    "project_id": "973b6d40-d31e-4d17-b8da-4daafa380128",
+    "download_url": "/api/download-output/502563cd-b7f6-4be9-a394-38c59197088f",
+    "preview_url": "/api/preview-output/502563cd-b7f6-4be9-a394-38c59197088f/",
+    "created_at": "2026-05-01T02:04:05.438259Z",
+    "variations": [
+      "Lovable",
+      "Claude Code",
+      "Google Studio",
+      "Universal JSON"
+    ]
+  },
+  {
+    "id": "121b4c60-e825-4394-bc82-523e7d5c0e21",
+    "model_id": "85b1e763-fd0d-414d-9be9-1d894931d693",
+    "model_name": "Mira.ai - Intelligence Engine",
+    "project_id": null,
+    "download_url": "/api/download-output/121b4c60-e825-4394-bc82-523e7d5c0e21",
+    "preview_url": "/api/preview-output/121b4c60-e825-4394-bc82-523e7d5c0e21/",
+    "created_at": "2026-04-29T21:50:02.137731Z",
+    "variations": [
+      "Lovable",
+      "Claude Code",
+      "Google Studio",
+      "Universal JSON"
+    ]
+  },
+  {
     "id": "f3b801b1-eab3-414d-95f7-6340fd7aded7",
     "model_id": "85b1e763-fd0d-414d-9be9-1d894931d693",
     "model_name": "Mira.ai - Intelligence Engine",

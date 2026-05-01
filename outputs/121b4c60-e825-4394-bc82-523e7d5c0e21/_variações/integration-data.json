@@ -1,0 +1,24 @@
+{
+  "platform": "universal",
+  "design_system": "Mira.ai - Intelligence Engine",
+  "css_variables": ":root {\n  --ds-color-1: #e5e5e5;\n  --ds-color-2: #050505;\n  --ds-color-3: #fff;\n  --ds-font-1: \"Geist\", sans-serif;\n  --ds-font-2: \"Playfair Display\", sans-serif;\n  --ds-font-3: \"Space Grotesk\", sans-serif;\n}\n",
+  "colors": [
+    "#e5e5e5",
+    "#050505",
+    "#fff"
+  ],
+  "fonts": [
+    "Geist",
+    "Playfair Display",
+    "Space Grotesk",
+    "Montserrat",
+    "Quicksand"
+  ],
+  "components": {},
+  "target_files": {
+    "html": [
+      "index.html"
+    ],
+    "css": []
+  }
+}

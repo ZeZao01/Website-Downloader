@@ -90,9 +90,12 @@
 
                     <div class="gallery-filters" id="galleryFilters">
                         <div class="filter-chip active" onclick="filterModels('all')">Todos</div>
-                        <div class="filter-chip" onclick="filterModels('SaaS')">SaaS</div>
-                        <div class="filter-chip" onclick="filterModels('Landing Page')">Landing Page</div>
-                        <div class="filter-chip" onclick="filterModels('Dashboard')">Dashboard</div>
+                        <div class="filter-chip" onclick="filterModels('saas-ai')">SaaS / AI</div>
+                        <div class="filter-chip" onclick="filterModels('landing')">Landing Page</div>
+                        <div class="filter-chip" onclick="filterModels('dashboard')">Dashboard</div>
+                        <div class="filter-chip" onclick="filterModels('ecommerce')">E-commerce</div>
+                        <div class="filter-chip" onclick="filterModels('portfolio')">Portfolio</div>
+                        <div class="filter-chip" onclick="filterModels('general')">Geral</div>
                     </div>
 
                     <div class="models-grid" id="modelsGrid">
@@ -453,7 +456,7 @@
             event.target.classList.add('active');
             
             if (niche === 'all') renderModels(models);
-            else renderModels(models.filter(m => m.niche === niche));
+            else renderModels(models.filter(m => (m.niche || '').toLowerCase() === niche.toLowerCase()));
         }
 
         function selectModel(id, name) {

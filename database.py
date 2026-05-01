@@ -64,17 +64,51 @@ class SupabaseDB:
     def upsert_model(self, model_data):
         if not self.client: return None
         try:
-            url = model_data.get("url")
+            # Ensure JSON-serializable fields
+            safe_data = self._sanitize_for_supabase(model_data)
+            url = safe_data.get("url")
             existing = self.get_model_by_url(url) if url else None
             
             if existing:
-                res = self.client.table("models").update(model_data).eq("id", existing["id"]).execute()
+                res = self.client.table("models").update(safe_data).eq("id", existing["id"]).execute()
             else:
-                res = self.client.table("models").upsert(model_data).execute()
+                res = self.client.table("models").upsert(safe_data).execute()
             return res.data
         except Exception as e:
             print(f"Error upserting model: {e}")
             return None
+
+    def update_model_design_system(self, model_id, design_system_data):
+        """Safely update only the design system fields for a model."""
+        if not self.client: return None
+        try:
+            import json
+            update = {
+                'design_system': json.loads(json.dumps(design_system_data, default=str)),
+                'has_design_system': True,
+            }
+            res = self.client.table("models").update(update).eq("id", model_id).execute()
+            return res.data
+        except Exception as e:
+            print(f"Error updating design system for {model_id}: {e}")
+            return None
+
+    def _sanitize_for_supabase(self, data):
+        """Ensure all values are JSON-serializable for Supabase."""
+        import json
+        safe = {}
+        for k, v in data.items():
+            if isinstance(v, (dict, list)):
+                try:
+                    # Round-trip through JSON to ensure serializability
+                    safe[k] = json.loads(json.dumps(v, default=str))
+                except (TypeError, ValueError):
+                    safe[k] = str(v)
+            elif isinstance(v, set):
+                safe[k] = list(v)
+            else:
+                safe[k] = v
+        return safe
 
     def delete_model(self, model_id):
         if not self.client: return False
@@ -88,7 +122,8 @@ class SupabaseDB:
     def save_project(self, project_data):
         if not self.client: return None
         try:
-            res = self.client.table("projects").insert(project_data).execute()
+            safe_data = self._sanitize_for_supabase(project_data)
+            res = self.client.table("projects").insert(safe_data).execute()
             return res.data
         except Exception as e:
             print(f"Error saving project: {e}")
@@ -97,7 +132,8 @@ class SupabaseDB:
     def update_project(self, project_id, update_data):
         if not self.client: return None
         try:
-            res = self.client.table("projects").update(update_data).eq("id", project_id).execute()
+            safe_data = self._sanitize_for_supabase(update_data)
+            res = self.client.table("projects").update(safe_data).eq("id", project_id).execute()
             return res.data
         except Exception as e:
             print(f"Error updating project: {e}")
@@ -117,16 +153,31 @@ class SupabaseDB:
         if not self.client: return None
         try:
             with open(local_path, 'rb') as f:
-                res = self.client.storage.from_(bucket).upload(remote_path, f, {"upsert": "true"})
+                file_data = f.read()
+            # Try upload, handling potential "already exists" errors
+            try:
+                self.client.storage.from_(bucket).upload(remote_path, file_data, {"content-type": "application/zip", "upsert": "true"})
+            except Exception as upload_err:
+                err_str = str(upload_err).lower()
+                if 'duplicate' in err_str or 'already exists' in err_str:
+                    # File already exists, update it
+                    try:
+                        self.client.storage.from_(bucket).update(remote_path, file_data, {"content-type": "application/zip"})
+                    except Exception:
+                        pass  # Best effort
+                else:
+                    raise
             return self.client.storage.from_(bucket).get_public_url(remote_path)
         except Exception as e:
             print(f"Error uploading file to {bucket}: {e}")
             return None
+
     def save_adaptation(self, adaptation_data):
         """Save an adaptation record."""
         if self.client:
             try:
-                res = self.client.table("adaptations").insert(adaptation_data).execute()
+                safe_data = self._sanitize_for_supabase(adaptation_data)
+                res = self.client.table("adaptations").insert(safe_data).execute()
                 return res.data
             except Exception as e:
                 print(f"⚠️ Supabase adaptations save failed ({e}), using local fallback")
