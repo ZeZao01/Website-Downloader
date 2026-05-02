@@ -371,32 +371,20 @@ Não inclua explicações — apenas código.
         return ['prompt-lovable.md', 'prompt-claude-code.md', 'prompt-google-studio.md', 'integration-data.json']
 
     def create_adaptation_package(self, output_dir):
-        """Create the full adaptation package."""
-        self.log("📦 Criando pacote de adaptação...")
+        """Create the full adaptation package (Prompt Hub Mode)."""
+        self.log("📦 Criando pacote de adaptação (Prompt Hub)...")
         os.makedirs(output_dir, exist_ok=True)
 
-        true_root = self.project_dir
-        if os.path.exists(self.project_dir):
-            items = [i for i in os.listdir(self.project_dir) if i != '__MACOSX']
-            if len(items) == 1 and os.path.isdir(os.path.join(self.project_dir, items[0])):
-                true_root = os.path.join(self.project_dir, items[0])
-
-        if os.path.exists(true_root):
-            self.log("📂 Copiando arquivos do projeto (ignorando node_modules/.git)...")
-            shutil.copytree(
-                true_root, output_dir, dirs_exist_ok=True,
-                ignore=shutil.ignore_patterns(
-                    'node_modules', '.git', '__pycache__', '.next',
-                    'venv', '.venv', 'dist', 'build', '.DS_Store'
-                )
-            )
-
+        # We analyze the project but DO NOT copy its files to the output.
+        # This keeps the output clean and focused on AI Prompts.
         structure = self.analyze_project()
 
+        # 1. Generate CSS Tokens
         css_vars = self.generate_css_variables()
         with open(os.path.join(output_dir, 'design-system-variables.css'), 'w', encoding='utf-8') as f:
             f.write(css_vars)
 
+        # 2. Generate Guide & AI Plan
         guide = self.generate_adaptation_guide(structure)
         ai_plan = self.generate_ai_adaptation_plan(structure)
         with open(os.path.join(output_dir, 'adaptation-guide.md'), 'w', encoding='utf-8') as f:
@@ -408,11 +396,107 @@ Não inclua explicações — apenas código.
         with open(os.path.join(output_dir, 'design-system-data.json'), 'w', encoding='utf-8') as f:
             json.dump(self.ds, f, indent=2, ensure_ascii=False)
 
-        # Generate platform-specific variations
+        # 3. Generate platform-specific variations
         variations = self.generate_platform_variations(structure, output_dir)
+        
+        # 4. Generate the Prompt Hub index.html
+        self._generate_prompt_hub_html(output_dir)
 
-        self.log(f"✅ Pacote gerado com sucesso ({len(variations)} variações).")
+        self.log(f"✅ Pacote Prompt Hub gerado com sucesso ({len(variations)} variações).")
         return output_dir
+
+    def _generate_prompt_hub_html(self, output_dir):
+        html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onyx Prompt Hub ⚡</title>
+    <style>
+        :root {{
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --border: #222;
+            --primary: #8a2be2;
+            --primary-hover: #9d4edd;
+            --text: #e0e0e0;
+            --text-muted: #888;
+        }}
+        body {{
+            background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif;
+            margin: 0; padding: 2rem; line-height: 1.6;
+        }}
+        .container {{ max-width: 900px; margin: 0 auto; }}
+        header {{ margin-bottom: 3rem; text-align: center; }}
+        h1 {{ color: #fff; font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: -0.02em; }}
+        h1 span {{ color: var(--primary); }}
+        .subtitle {{ color: var(--text-muted); font-size: 1.1rem; }}
+        
+        .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }}
+        .card {{
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+            padding: 1.5rem; transition: transform 0.2s, border-color 0.2s;
+            display: flex; flex-direction: column;
+        }}
+        .card:hover {{ transform: translateY(-2px); border-color: var(--primary); }}
+        .card h2 {{ margin: 0 0 0.5rem 0; font-size: 1.25rem; color: #fff; }}
+        .card p {{ margin: 0 0 1.5rem 0; color: var(--text-muted); font-size: 0.95rem; flex-grow: 1; }}
+        
+        .btn {{
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--primary); color: #fff; text-decoration: none;
+            padding: 0.75rem 1rem; border-radius: 8px; font-weight: 500;
+            transition: background 0.2s; border: none; cursor: pointer; width: 100%; box-sizing: border-box;
+        }}
+        .btn:hover {{ background: var(--primary-hover); }}
+        .btn-outline {{ background: transparent; border: 1px solid var(--border); color: var(--text); }}
+        .btn-outline:hover {{ border-color: var(--primary); background: rgba(138, 43, 226, 0.1); }}
+        
+        .sys-info {{ margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted); text-align: center; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Onyx <span>Prompt Hub</span></h1>
+            <div class="subtitle">Seus assets de IA foram compilados. O projeto original não foi modificado.</div>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h2>🎨 Design System CSS</h2>
+                <p>Todos os tokens extraídos (cores, fontes, animações) em variáveis CSS prontas para uso.</p>
+                <a href="design-system-variables.css" target="_blank" class="btn btn-outline">Abrir Variáveis CSS</a>
+            </div>
+
+            <div class="card">
+                <h2>🤖 Prompt Lovable / Cursor</h2>
+                <p>Mega-prompt otimizado para IAs de geração de código autônoma e context-aware.</p>
+                <a href="_variações/prompt-lovable.md" target="_blank" class="btn">Abrir Prompt Lovable</a>
+            </div>
+
+            <div class="card">
+                <h2>💬 Prompt Claude / ChatGPT</h2>
+                <p>Guia passo-a-passo detalhado para IAs conversacionais adaptarem a estrutura do seu projeto.</p>
+                <a href="_variações/prompt-claude-code.md" target="_blank" class="btn">Abrir Prompt Claude</a>
+            </div>
+            
+            <div class="card">
+                <h2>📄 Guia de Adaptação Geral</h2>
+                <p>O plano arquitetural completo mapeando o design system para a estrutura do seu projeto.</p>
+                <a href="adaptation-guide.md" target="_blank" class="btn btn-outline">Abrir Guia Master</a>
+            </div>
+        </div>
+        
+        <div class="sys-info">
+            Gerado por Gravit Design Factory. Salve a pasta _variações para consultar os dados integrais.
+        </div>
+    </div>
+</body>
+</html>"""
+        with open(os.path.join(output_dir, 'index.html'), 'w', encoding='utf-8') as f:
+            f.write(html)
+
 
 
 def extract_zip_project(zip_path, extract_to):
